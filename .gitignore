@@ -1,5 +1,5 @@
 #Sensitive information
-res/cred.json
+res/cred.*
 
 #Outputs
 test_output.csv

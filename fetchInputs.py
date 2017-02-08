@@ -1,24 +1,27 @@
 import json
+import csv
 
-def database_inputs_user():
-    """
-    Get database information from user
-    """
-
-    info_to_req = ['host', 'user', 'passwd', 'db', 'port']
-    dbinfo = {x: raw_input("%s>>\t\t" % x.upper()).strip() for x in info_to_req}
-
-    return dbinfo
-
-def database_inputs_json(json_file):
+def database_inputs(loc):
     """
     Loads database information from resources
     """
 
-    with open(json_file, 'r') as fd:
-        dbinfo = json.load(fd)
+    if loc == None:
+        info_to_req = ['host', 'user', 'passwd', 'db', 'port']
+        dbi = {x: raw_input("%s>>\t\t" % x.upper()).strip() for x in info_to_req}
 
-    return dbinfo
+    elif loc.endswith('.json'):
+        with open(loc, 'r') as fd:
+            dbi = json.load(fd)
+
+    elif loc.endswith('.csv'):
+        with open(loc, 'r') as fd:
+            reader = csv.reader(fd)
+            dbi = {row[0].strip(): row[1].strip() for row in reader}
+    else:
+        reutrn -1
+
+    return {str(k): str(v) for k,v in dbi.iteritems()}
 
 def table_names(file):
     """

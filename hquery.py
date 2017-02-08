@@ -34,7 +34,18 @@ def connect_mysql_converted(**dbi):
                                conv=convert)
     except MySQLdb.Error, e:
         print "Error connecting %d: %s" % (e.args[0], e.args[1])
+        return (e.args[0], e.args[1])
+
     return conn
+
+def ping_database(**dbi):
+    """
+    Ping database for successful connection
+    """
+
+    db = connect_mysql_converted(**dbi)
+    if isinstance(db, tuple):
+        return -1
 
 def get_query_between_dates(table_name, start_date, end_date):
     """
@@ -51,8 +62,8 @@ def get_query_between_dates(table_name, start_date, end_date):
 def main():
 
     #Connect to database and get cursor
-    dbi = fetchInputs.database_inputs_json('res/cred.json')
-    dbi = {k: str(v) for k,v in dbi.iteritems()}
+    dbi = fetchInputs.database_inputs('res/cred.json')
+    ping_database(**dbi)
     db = connect_mysql_converted(**dbi)
     cursor = db.cursor()
 
