@@ -59,7 +59,7 @@ def main():
     #Specify which tables we want to run query over
     list_of_tables = fetchInputs.table_names('res/table_list.txt')
 
-    allRenewables = RenewableTimeSeries()
+    allRenewables = RenewableTimeSeries(15)
 
     #Run the queries over all tables
     for table in list_of_tables:
