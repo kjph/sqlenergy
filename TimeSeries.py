@@ -41,13 +41,18 @@ class TimeSeries():
     def stream_handler(self, stream, min_val=0, max_val=1000):
 
         prev_val = None
+
+        #Go through all values in stream
         for row in stream:
 
+            #Format to date time object and floor time to closest minute_res
             dt = datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S.%f')
             dt = datetime(dt.year, dt.month, dt.day, dt.hour, self.minute_res*(dt.minute // self.minute_res))
 
-            if row[1]:
+            #Only process values that are not None
+            if row[1] != None:
 
+                #If first iteration
                 if prev_val == None:
                     prev_val = float(row[1])
                     continue
