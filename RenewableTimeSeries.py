@@ -6,6 +6,16 @@ class RenewableTimeSeries():
     def __init__(self):
         self.time_value_map = collections.defaultdict(float)
 
+    def __str__(self):
+
+        output = "Timestamp, Renewable-Value\n"
+
+        for timestamp, value in self.time_value_map.iteritems():
+            output += "%s, %s\n" % (timestamp, value)
+
+        return output
+
+
     def stream_handler(self, stream, minute_res=15):
 
         for row in stream:

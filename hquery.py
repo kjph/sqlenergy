@@ -71,5 +71,8 @@ def main():
 
         allRenewables.stream_handler(cursor.fetchall())
 
+    with open('test_output.csv', 'w') as fd:
+        fd.write(str(allRenewables))
+
 if __name__ == '__main__':
     main()

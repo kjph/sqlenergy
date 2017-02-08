@@ -1,6 +1,9 @@
 #Sensitive information
 res/cred.json
 
+#Outputs
+test_output.csv
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
