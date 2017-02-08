@@ -63,8 +63,8 @@ def main():
 
     #Run the queries over all tables
     for table in list_of_tables:
-        start_date = '2016-01-16'
-        end_date = '2016-12-16'
+        start_date = '2016-01-01'
+        end_date = '2016-12-31'
         query = get_query_between_dates(table, start_date, end_date)
         cursor.execute(query)
         #print query
