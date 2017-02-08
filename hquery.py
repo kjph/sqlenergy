@@ -1,7 +1,7 @@
 import MySQLdb
 import logging
 from datetime import datetime, timedelta
-from RenewableTimeSeries import *
+from TimeSeries import TimeSeries
 import fetchInputs
 
 try:

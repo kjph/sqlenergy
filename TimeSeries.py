@@ -7,7 +7,7 @@ def perdelta(start, end, delta):
         yield curr
         curr += delta
 
-class RenewableTimeSeries():
+class TimeSeries():
 
     def __init__(self, minute_res):
         self.time_value_map = collections.defaultdict(float)
