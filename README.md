@@ -5,7 +5,7 @@ MySQL Handler for Energy Usage
 
 a `json` file must be saved in `res/cred.json` in the format:
 
-`
+```json
     {
         "host": "1xx.xxx.xxx.xxx",
         "user": "uuuuuuu",
@@ -13,4 +13,4 @@ a `json` file must be saved in `res/cred.json` in the format:
         "db": "dddd",
         "port": "3306"
     }
-`
+```
