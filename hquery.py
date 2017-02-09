@@ -47,6 +47,8 @@ def ping_database(**dbi):
     if isinstance(db, tuple):
         return -1
 
+    db.close()
+
 def get_query_between_dates(table_name, start_date, end_date):
     """
     Function to generate SQL query string
@@ -66,21 +68,22 @@ def main():
     db = connect_mysql_converted(**dbi)
     cursor = db.cursor()
 
-    #Specify which tables we want to run query over
-    type_table_map = fetchInputs.type_table_map('res/table_list.txt')
-
-    #Settings
+    #Settings (temporary)
     min_res = 15
-    allSeries = []
     start_date = '2016-01-01'
     end_date = '2016-12-31'
     base_output = 'test_output'
 
+    #Specify which tables we want to run query over
+    type_table_map = fetchInputs.type_table_map('res/table_list.txt')
+
+    #Get unique keys
     all_types = list(set([k for k in type_table_map]))
 
+    #Init TimeSeries object for all source types
     Series = TimeSeries(all_types, min_res)
 
-    #Run over all
+    #Run over all series types
     for series_type, list_of_tables in type_table_map.iteritems():
         print series_type
 
@@ -92,9 +95,12 @@ def main():
 
             Series.stream_handler(series_type, cursor.fetchall())
 
+    #Write output
     series_output = '%s.csv' % (base_output)
     with open(series_output, 'w') as fd:
         fd.write(str(Series))
+
+    db.close()
 
 if __name__ == '__main__':
     main()
