@@ -208,10 +208,10 @@ class FrameConnect(tk.Frame):
 
         self.update_context()
 
-        if hquery.ping_database(**self.ctx.dbi) == -1:
-            self.status.set("Failed to Connect")
-        else:
+        if hquery.ping_database(**self.ctx.dbi):
             self.status.set("Success")
+        else:
+            self.status.set("Failed to Connect")
 
     def clear_settings(self):
         """

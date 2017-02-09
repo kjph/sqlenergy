@@ -45,9 +45,10 @@ def ping_database(**dbi):
 
     db = connect_mysql_converted(**dbi)
     if isinstance(db, tuple):
-        return -1
+        return 0
 
     db.close()
+    return 1
 
 def get_query_between_dates(table_name, start_date, end_date):
     """
