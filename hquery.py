@@ -10,12 +10,19 @@ except ImportError:
     _connarg('conv')
 
 def connect_mysql_converted(**dbi):
-    """
-    Specify converters for MYSQL connections
+    """Specify converters for MYSQL connections.
 
-    Arguments:
-        dbi:    key-value dictionary specifying all credentials
-                All values must be of string type
+    Parameters
+    ---------------
+    dbi:    dict-type, key=field, value=value
+            container for database specification
+
+    Return
+    ---------------
+    success     returns a MySQLdb connection.
+                Must be closed outside of function
+    fail        returns tuple
+                (error_code, error_msg)
     """
 
     try:
@@ -39,8 +46,16 @@ def connect_mysql_converted(**dbi):
     return conn
 
 def ping_database(**dbi):
-    """
-    Ping database for successful connection
+    """Ping database for successful connection.
+
+    Parameters
+    ---------------
+    dbi:    dict-type, key=field, value=value
+            container for database specification
+
+    Return
+    ---------------
+    bool_success
     """
 
     db = connect_mysql_converted(**dbi)
@@ -51,12 +66,21 @@ def ping_database(**dbi):
     return 1
 
 def get_query_between_dates(table_name, start_date, end_date):
-    """
-    Function to generate SQL query string
+    """Generate SQL query string.
+
+    Parameters
+    ---------------
+    table_name:     str, name of table to query from database
+    start_date:     str, 'YYYY-MM-DD', date to being query
+    end_date:       str, 'YYYY-MM-DD', date to end query
+
+    Return
+    ---------------
+    str
     """
 
     query = "select FROM_UNIXTIME(TIMESTAMP/1000) as timestamp, VALUE as kwh"
-    query += " from %s" % table_name
+    query += " from %s" % table_name.strip()
     query += " where ((TIMESTAMP/1000) > UNIX_TIMESTAMP('%s'))" % start_date
     query += " AND ((TIMESTAMP/1000) < UNIX_TIMESTAMP('%s'))" % end_date
 
