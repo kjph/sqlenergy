@@ -1,3 +1,4 @@
+import logging
 import collections
 from datetime import datetime, timedelta
 
@@ -48,11 +49,11 @@ class TimeSeries():
 
         #Determine maximum/minimum recorded time stamps in all series
         for series_type in self.all_types:
-            self.time_value_map[series_type] = collections.OrderedDict(sorted(self.time_value_map[series_type].iteritems()))
+            #self.time_value_map[series_type] = collections.OrderedDict(sorted(self.time_value_map[series_type].iteritems()))
             self.time_min = min(self.time_min,
-                                min(k for k, v in self.time_value_map[series_type].iteritems() if v != 0))
+                                min([k for k, v in self.time_value_map[series_type].iteritems()]))
             self.time_max = max(self.time_max,
-                                max(k for k, v in self.time_value_map[series_type].iteritems() if v != 0))
+                                max([k for k, v in self.time_value_map[series_type].iteritems()]))
 
         #For all series, fill the values
         for series_type in self.all_types:
@@ -82,13 +83,12 @@ class TimeSeries():
                 if prev_val == None:
                     prev_val = float(row[1])
                     continue
-
                 #Remove cumulative
                 val = float(row[1]) - prev_val
 
                 #Thresholding
                 if not(val>min_val and val<max_val):
-                    continue
+                    val = 0
 
                 prev_val = float(row[1])
                 self.time_value_map[series_type][dt] += val

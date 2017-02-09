@@ -1,5 +1,6 @@
 import MySQLdb
 import logging
+import logging.config
 from datetime import datetime, timedelta
 from TimeSeries import TimeSeries
 import fetchInputs
@@ -29,10 +30,10 @@ def connect_mysql_converted(**dbi):
         orig_conv = MySQLdb.converters.conversions
         conv_iter = iter(orig_conv)
         convert = dict(zip(conv_iter, [str,] * len(orig_conv.keys())))
-        print "Connecting host=%s user=%s db=%s port=%d" % (dbi['host'],
+        logging.info("hquery:Connecting host=%s user=%s db=%s port=%d" % (dbi['host'],
                                                             dbi['user'],
                                                             dbi['db'],
-                                                            int(dbi['port']))
+                                                            int(dbi['port'])))
         conn = MySQLdb.connect(dbi['host'],
                                dbi['user'],
                                dbi['passwd'],
@@ -40,7 +41,7 @@ def connect_mysql_converted(**dbi):
                                int(dbi['port']),
                                conv=convert)
     except MySQLdb.Error, e:
-        print "Error connecting %d: %s" % (e.args[0], e.args[1])
+        logging.error("hquery:ERR:connecting %d: %s" % (e.args[0], e.args[1]))
         return (e.args[0], e.args[1])
 
     return conn
@@ -58,11 +59,14 @@ def ping_database(**dbi):
     bool_success
     """
 
+    logging.info("Ping test")
     db = connect_mysql_converted(**dbi)
     if isinstance(db, tuple):
+        logging.info("Ping test FAILED")
         return 0
 
     db.close()
+    logging.info("Ping test SUCCESS")
     return 1
 
 def get_query_between_dates(table_name, start_date, end_date):
@@ -84,33 +88,28 @@ def get_query_between_dates(table_name, start_date, end_date):
     query += " where ((TIMESTAMP/1000) > UNIX_TIMESTAMP('%s'))" % start_date
     query += " AND ((TIMESTAMP/1000) < UNIX_TIMESTAMP('%s'))" % end_date
 
+    logging.debug("hquery:get_query_between_dates(%s, %s, %s): %s" % (table_name, start_date, end_date, query))
+
     return query
 
-def main():
+def get_time_series(start_date, end_date, min_res, table_file='res/table_list.txt', cred_file='res/cred.json'):
 
     #Connect to database and get cursor
-    dbi = fetchInputs.database_inputs('res/cred.json')
+    dbi = fetchInputs.database_inputs(cred_file)
     db = connect_mysql_converted(**dbi)
     cursor = db.cursor()
 
-    #Settings (temporary)
-    min_res = 15
-    start_date = '2016-01-01'
-    end_date = '2016-12-31'
-    base_output = 'test_output'
-
     #Specify which tables we want to run query over
-    type_table_map = fetchInputs.type_table_map('res/table_list.txt')
+    type_table_map = fetchInputs.type_table_map(table_file)
 
     #Get unique keys
-    all_types = list(set([k for k in type_table_map]))
+    all_types = [k for k in type_table_map]
 
     #Init TimeSeries object for all source types
     Series = TimeSeries(all_types, min_res)
 
     #Run over all series types
     for series_type, list_of_tables in type_table_map.iteritems():
-        print series_type
 
         #Run the queries over all tables
         for table in list_of_tables:
@@ -120,12 +119,27 @@ def main():
 
             Series.stream_handler(series_type, cursor.fetchall())
 
+    return Series
+
+    db.close()
+
+
+def main():
+
+    logging.basicConfig(filename='hquery.log',level=logging.DEBUG)
+
+    #Settings (temporary)
+    min_res = 15
+    start_date = '2016-01-01'
+    end_date = '2017-01-01'
+    base_output = 'test_output'
+
+    Series = get_time_series(start_date, end_date, min_res)
+
     #Write output
     series_output = '%s.csv' % (base_output)
     with open(series_output, 'w') as fd:
         fd.write(str(Series))
-
-    db.close()
 
 if __name__ == '__main__':
     main()

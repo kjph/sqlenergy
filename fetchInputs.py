@@ -1,6 +1,8 @@
+import logging
 import json
 import csv
 import collections
+from datetime import datetime
 
 def database_inputs(loc):
     """
@@ -20,21 +22,12 @@ def database_inputs(loc):
             reader = csv.reader(fd)
             dbi = {row[0].strip(): row[1].strip() for row in reader}
     else:
-        reutrn -1
+        logging.warning('fetchInputs:database_inputs:failed to detect file type')
+        return -1
 
+    logging.debug('fetchInputs:database_inputs:%s' % dbi)
     return {str(k): str(v) for k,v in dbi.iteritems()}
 
-def table_names(file):
-    """
-    Load all tables from a file
-    """
-
-    all_tables = []
-    with open(file, 'r') as fd:
-        for line in fd.readlines():
-            all_tables.append(line.strip())
-
-    return all_tables
 
 def type_table_map(loc):
 
@@ -46,4 +39,8 @@ def type_table_map(loc):
         for row in reader:
             ret[row[1].strip()].append(row[0].strip())
 
+    logging.debug("fetchInputs:type_table_map:%s" % ret)
     return ret
+
+def get_datetime_from_str(in_str, time_format='%Y-%m-%d %H:%M:%S'):
+    return datetime.strptime(in_str, time_format)
