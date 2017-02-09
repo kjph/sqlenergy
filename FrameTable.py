@@ -1,4 +1,5 @@
 import Tkinter as tk
+import ttk
 from Tkinter import Label, Frame, Listbox, Button, Entry
 import hquery
 
@@ -21,7 +22,7 @@ class FrameTable(tk.Frame):
         self.main_frame = Frame(self)
         self.main_frame.pack(fill=tk.X)
 
-        self.fetched_listbox = Listbox(self.main_frame, width=40)
+        self.fetched_listbox = Listbox(self.main_frame, width=40, selectmode=tk.EXTENDED)
         self.fetched_listbox.pack(side=tk.LEFT)
 
         #Build the select options (buttons between two listboxes)
@@ -29,8 +30,9 @@ class FrameTable(tk.Frame):
         self.select_frame.pack(side=tk.LEFT)
         self.initUI_select_frame(self.select_frame)
 
-        self.table_listbox = Listbox(self.main_frame, width=40)
-        self.table_listbox.pack(side=tk.LEFT)
+        self.table_tree = ttk.Treeview(self.main_frame)
+        self.initUI_table_tree
+        self.table_tree.pack(side=tk.LEFT)
 
         #Frame for containing buttons
         self.btn_frame = Frame(self)
@@ -42,7 +44,7 @@ class FrameTable(tk.Frame):
         self.select_btn_del = Button(parent, text="<< Remove", width=10)
         self.select_btn_del.pack()
 
-        self.select_btn_add = Button(parent, text="Add as >>", width=10)
+        self.select_btn_add = Button(parent, text="Add as >>", width=10, command=self.add_tables)
         self.select_btn_add.pack()
 
         self.select_type = Entry(parent, width=10)
@@ -58,6 +60,9 @@ class FrameTable(tk.Frame):
         self.btn_sel_all = Button(self.btn_frame, text="All", width=8)
         self.btn_sel_all.pack(side=tk.LEFT)
 
+    def initUI_table_tree(self):
+        #See: http://knowpapa.com/ttk-treeview/
+
     def fetch_tables(self):
 
         if self.ctx.last_conn:
@@ -69,5 +74,14 @@ class FrameTable(tk.Frame):
             self.fetched_listbox.update_idletasks()
         else:
             self.ctx.status.set("Please test connection first")
+
+    def add_tables(self):
+
+        source_type = self.select_type.get().strip()
+        if source_type != '':
+            selected_tables = [self.fetched_listbox.get(idx) for idx in self.fetched_listbox.curselection()]
+            for tab, col in enumerate(selected_tables):
+                self.table_listbox.insert(tab,col)
+
 
     #def load_tables(self):
