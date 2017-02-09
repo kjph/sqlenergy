@@ -7,51 +7,41 @@ import tkFileDialog as filedialog
 import fetchInputs
 import hquery
 
-class WindowConnect(tk.Frame):
+class FrameConnect(tk.Frame):
     """
     Window for connecting to database
     """
 
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent, ctx, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
-        #Title
-        self.parent = parent
-        self.parent.title("CSIRO SQL Energy Analyzer")
-
-        #Global widget configuration
-        self.global_config = {'padx': 5, 'pady': 5}
-
-        #Master Frame to contain main widgets
-        #Status bar should be below this
-        self.master = Frame(parent, bd=5, relief=tk.GROOVE)
-        self.master.pack()
+        #Context
+        self.ctx = ctx
+        self.global_config = ctx.global_config
 
         #Pack the regions
-        self.top_label = Label(self.master, text="Specify Database Information", font="Arial 9 bold")
+        self.top_label = Label(self, text="Specify Database Information", font="Arial 9 bold")
         self.top_label.pack(anchor=tk.W)
 
-        self.top_frame = Frame(self.master,bd=4)
+        self.top_frame = Frame(self, bd=4)
         self.top_frame.pack(fill=tk.X)
 
-        self.mid_rule=Frame(self.master,height=1,width=350,bg="gray")
+        self.mid_rule=Frame(self,height=1,width=350,bg="gray")
         self.mid_rule.pack()
 
-        self.mid_label = Label(self.master, text="OR Load Configuration", font="Arial 9 bold")
+        self.mid_label = Label(self, text="OR Load Configuration", font="Arial 9 bold")
         self.mid_label.pack(anchor=tk.W)
 
-        self.mid_frame = Frame(self.master)
+        self.mid_frame = Frame(self)
         self.mid_frame.pack(fill=tk.X)
 
-        self.bot_rule=Frame(self.master,height=1,width=350,bg="gray")
+        self.bot_rule=Frame(self,height=1,width=350,bg="gray")
         self.bot_rule.pack()
 
-        self.bot_frame = Frame(self.master,bd=5)
+        self.bot_frame = Frame(self,bd=5)
         self.bot_frame.pack(fill=tk.X)
 
-        self.status = tk.StringVar(value="Ready.")
-        self.status_label = Label(parent, textvariable=self.status, font="Default 8")
-        self.status_label.pack(anchor=tk.W)
+        self.status = ctx.status
 
         self.init_ui_top()
         self.init_ui_mid()
@@ -140,16 +130,17 @@ class WindowConnect(tk.Frame):
         g_close = {'row':1, 'column':2  }
 
         #Connect
-        self.connect_button = Button(m, text="Connect", command=self.connect,
-                                     width=10, bg="#428bca", fg="black",
-                                     font="Default 9 bold")
+        # self.connect_button = Button(m, text="Connect", command=self.connect,
+        #                              width=10, bg="#428bca", fg="black",
+        #                              font="Default 9 bold")
+        self.connect_button = Button(m, text="Ping", command=self.connect, width=10)
         self.connect_button.pack(side=tk.RIGHT, **self.global_config)
 
         self.clear_button = Button(m, text='Clear', command=self.clear_settings, width=8)
         self.clear_button.pack(side=tk.RIGHT, **self.global_config)
 
-        self.close_button = Button(m, text="Close", command=self.exit, width=8)
-        self.close_button.pack(side=tk.RIGHT, **self.global_config)
+        # self.close_button = Button(m, text="Close", command=self.exit, width=8)
+        # self.close_button.pack(side=tk.RIGHT, **self.global_config)
 
 
     def find_file(self):
@@ -215,15 +206,12 @@ class WindowConnect(tk.Frame):
         """
         self.status.set("Connecting...")
 
-        dbi = {}
-        dbi['host'] = self.host_entry.get().strip()
-        dbi['user'] = self.user_entry.get().strip()
-        dbi['passwd'] = self.passwd_entry.get().strip()
-        dbi['db'] = self.db_entry.get().strip()
-        dbi['port'] = self.port_entry.get().strip()
+        self.update_context()
 
-        if hquery.ping_database(**dbi) == -1:
+        if hquery.ping_database(**self.ctx.dbi) == -1:
             self.status.set("Failed to Connect")
+        else:
+            self.status.set("Success")
 
     def clear_settings(self):
         """
@@ -244,14 +232,19 @@ class WindowConnect(tk.Frame):
         self.port_current.set("3306")
         self.file_current_name.set("")
 
+        self.update_context()
+
+    def update_context(self):
+
+        self.ctx.dbi['host'] = self.host_entry.get().strip()
+        self.ctx.dbi['user'] = self.user_entry.get().strip()
+        self.ctx.dbi['passwd'] = self.passwd_entry.get().strip()
+        self.ctx.dbi['db'] = self.db_entry.get().strip()
+        self.ctx.dbi['port'] = self.port_entry.get().strip()
+
     def exit(self):
         """
         Close
         """
 
         sys.exit(0)
-
-if __name__ == '__main__':
-    root = tk.Tk()
-    WindowConnect(root)
-    root.mainloop()
