@@ -3,12 +3,26 @@ from Tkinter import Label, Frame
 from FrameConnect import FrameConnect
 from FrameTable import FrameTable
 from FrameSet import FrameSet
+import collections
 
 class Context():
 
     def __init__(self):
         self.dbi = {'host': None, 'user': None, 'passwd': None, 'db': None, 'port': 3306}
+        self.tab_stat = collections.defaultdict(dict)
         self.last_conn = 0
+
+    def add_table(self, table, **stat):
+        if ('stype' not in stat or 'thr_min' not in stat or
+            'thr_max' not in stat or 'time_format' not in stat) and len(stat) != 4:
+
+            logging.warning("CTX:ERR:Attempted to add table in bad format")
+        else:
+            self.tab_stat[table] = stat
+
+    def del_table(self, table):
+        self.tab_stat[table] = {}
+        self.tab_stat.pop(table, None)
 
 class WindowMain(tk.Frame):
     """
@@ -26,6 +40,7 @@ class WindowMain(tk.Frame):
         self.ctx = Context()
         self.ctx.status = tk.StringVar(value="Ready.")
         self.ctx.global_config = {'padx': 5, 'pady': 5}
+        self.ctx.const = {'win_width': 760}
 
         #Master Frame to contain main widgets
         self.main = Frame(self.parent)
@@ -49,9 +64,6 @@ class WindowMain(tk.Frame):
 
         # self.main_table = FrameSet(self.main, self.ctx, bd=3, relief=tk.GROOVE)
         # self.main_table.pack(side=tk.LEFT, fill=tk.BOTH)
-
-
-
 
 if __name__ == '__main__':
     root = tk.Tk()

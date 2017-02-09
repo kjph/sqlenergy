@@ -28,7 +28,7 @@ class FrameConnect(tk.Frame):
         self.top_frame = Frame(self, bd=4)
         self.top_frame.pack(fill=tk.X)
 
-        self.mid_rule=Frame(self,height=1,width=550,bg="gray")
+        self.mid_rule=Frame(self,height=1,width=ctx.const['win_width'],bg="gray")
         self.mid_rule.pack()
 
         self.mid_label = Label(self, text="OR Load Configuration", font="Arial 9 bold")
@@ -58,7 +58,7 @@ class FrameConnect(tk.Frame):
         self.file_label = Label(m, text="File:")
         self.file_label.pack(side=tk.LEFT, **self.global_config)
 
-        self.file_entry = Entry(m, textvariable=self.file_current_name, width=65)
+        self.file_entry = Entry(m, textvariable=self.file_current_name, width=self.ctx.const['win_width']/8)
         self.file_entry.pack(fill=tk.X, side=tk.LEFT, **self.global_config)
 
         self.file_button = Button(m, text="Load", command=self.load_file, width=7)
