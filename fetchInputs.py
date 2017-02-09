@@ -1,5 +1,6 @@
 import json
 import csv
+import collections
 
 def database_inputs(loc):
     """
@@ -34,3 +35,15 @@ def table_names(file):
             all_tables.append(line.strip())
 
     return all_tables
+
+def type_table_map(loc):
+
+    ret = collections.defaultdict(list)
+
+    with open(loc, 'r') as fd:
+        reader = csv.reader(fd)
+
+        for row in reader:
+            ret[row[1].strip()].append(row[0].strip())
+
+    return ret

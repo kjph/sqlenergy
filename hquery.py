@@ -63,27 +63,38 @@ def main():
 
     #Connect to database and get cursor
     dbi = fetchInputs.database_inputs('res/cred.json')
-    ping_database(**dbi)
     db = connect_mysql_converted(**dbi)
     cursor = db.cursor()
 
     #Specify which tables we want to run query over
-    list_of_tables = fetchInputs.table_names('res/table_list.txt')
+    type_table_map = fetchInputs.type_table_map('res/table_list.txt')
 
-    allRenewables = RenewableTimeSeries(15)
+    #Settings
+    min_res = 15
+    allSeries = []
+    start_date = '2016-01-01'
+    end_date = '2016-12-31'
+    base_output = 'test_output'
 
-    #Run the queries over all tables
-    for table in list_of_tables:
-        start_date = '2016-01-01'
-        end_date = '2016-12-31'
-        query = get_query_between_dates(table, start_date, end_date)
-        cursor.execute(query)
-        #print query
+    all_types = list(set([k for k in type_table_map]))
 
-        allRenewables.stream_handler(cursor.fetchall())
+    Series = TimeSeries(all_types, min_res)
 
-    with open('test_output.csv', 'w') as fd:
-        fd.write(str(allRenewables))
+    #Run over all
+    for series_type, list_of_tables in type_table_map.iteritems():
+        print series_type
+
+        #Run the queries over all tables
+        for table in list_of_tables:
+
+            query = get_query_between_dates(table, start_date, end_date)
+            cursor.execute(query)
+
+            Series.stream_handler(series_type, cursor.fetchall())
+
+    series_output = '%s.csv' % (base_output)
+    with open(series_output, 'w') as fd:
+        fd.write(str(Series))
 
 if __name__ == '__main__':
     main()
