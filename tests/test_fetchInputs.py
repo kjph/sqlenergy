@@ -1,11 +1,11 @@
 import unittest
-from ..csiroEnergy8 import fetchInputs
+from ..sqlenergy import fetchInputs
 
 class TableStat(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(TableStat, self).__init__(*args, **kwargs)
-        self.r = fetchInputs.table_stat('./csiroEnergy8/res/test_table_list.txt')
+        self.r = fetchInputs.table_stat('./sqlenergy/res/test_table_list.txt')
 
     def test_output_len(self):
         self.assertTrue(len(self.r) == 4)
