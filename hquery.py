@@ -69,6 +69,23 @@ def ping_database(**dbi):
     logging.info("Ping test SUCCESS")
     return 1
 
+def get_all_tables(ending='realenergy', **dbi):
+
+    db = connect_mysql_converted(**dbi)
+    if isinstance(db, tuple):
+        logging.info("hquery:get_all_tables:FAILED")
+        return 0
+
+    cur = db.cursor()
+    cur.execute("show tables;")
+
+    all_tables = [x[0].strip() for x in cur.fetchall() if x[0].strip().endswith(ending)]
+
+    db.close()
+    logging.debug("hquery:get_all_tables %s" % all_tables)
+    logging.info("hquery:get_all_tables:SUCCESS")
+    return all_tables
+
 def get_query_between_dates(table_name, start_date, end_date):
     """Generate SQL query string.
 
@@ -132,13 +149,12 @@ def main():
     min_res = 15
     start_date = '2016-01-01'
     end_date = '2017-01-01'
-    base_output = 'test_output'
+    output_file = 'rawdata.csv'
 
     Series = get_time_series(start_date, end_date, min_res)
 
     #Write output
-    series_output = '%s.csv' % (base_output)
-    with open(series_output, 'w') as fd:
+    with open(output_file, 'w') as fd:
         fd.write(str(Series))
 
 if __name__ == '__main__':
