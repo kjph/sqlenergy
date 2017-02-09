@@ -2,12 +2,6 @@ import unittest
 from hquery import *
 from fetchInputs import get_datetime_from_str
 
-# class GetQueryBetweenDatesTest(unittest.TestCase):
-
-#     def test_correct_one(self):
-#         r = get_query_between_dates('table', '2015-10-11', '2016-10-11')
-#         self.assertTrue(r == "select VALUE AS KWH, FROM_UNIXTIME(TIMESTAMP/1000) AS timestamp_good FROM table where ((TIMESTAMP/1000) > UNIX_TIMESTAMP('2015-10-11')) AND ((TIMESTAMP/1000) < UNIX_TIMESTAMP('2016-10-11'))")
-
 class GetTimeSeriesTest(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):

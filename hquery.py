@@ -117,24 +117,23 @@ def get_time_series(start_date, end_date, min_res, table_file='res/table_list.tx
     cursor = db.cursor()
 
     #Specify which tables we want to run query over
-    type_table_map = fetchInputs.type_table_map(table_file)
+    tab_stat = fetchInputs.table_stat(table_file)
 
     #Get unique keys
-    all_types = [k for k in type_table_map]
+    all_types = list(set([tab_stat[k]['stype'] for k in tab_stat]))
 
     #Init TimeSeries object for all source types
     Series = TimeSeries(all_types, min_res)
 
     #Run over all series types
-    for series_type, list_of_tables in type_table_map.iteritems():
+    for tab, stat in tab_stat.iteritems():
 
-        #Run the queries over all tables
-        for table in list_of_tables:
+        query = get_query_between_dates(tab, start_date, end_date)
+        cursor.execute(query)
 
-            query = get_query_between_dates(table, start_date, end_date)
-            cursor.execute(query)
-
-            Series.stream_handler(series_type, cursor.fetchall())
+        Series.stream_handler(stat['stype'], cursor.fetchall(),
+                              stat['thr_min'], stat['thr_max'],
+                              stat['time_format'])
 
     return Series
 
