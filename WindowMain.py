@@ -8,6 +8,7 @@ class Context():
 
     def __init__(self):
         self.dbi = {'host': None, 'user': None, 'passwd': None, 'db': None, 'port': 3306}
+        self.last_conn = 0
 
 class WindowMain(tk.Frame):
     """
@@ -40,14 +41,16 @@ class WindowMain(tk.Frame):
         #UI Layout
         self.main_connect_label = Label(self.main, text="test")
 
-        self.main_connect = FrameConnect(self.main, self.ctx, bd=3, relief=tk.GROOVE)
-        self.main_connect.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.main_connect = FrameConnect(self.main, self.ctx, bd=2, relief=tk.GROOVE)
+        self.main_connect.pack(fill=tk.BOTH)
 
-        self.main_table = FrameTable(self.main, self.ctx.status, bd=3, relief=tk.GROOVE)
-        self.main_table.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.main_table = FrameTable(self.main, self.ctx, bd=2, relief=tk.GROOVE)
+        self.main_table.pack(fill=tk.BOTH)
 
-        self.main_table = FrameSet(self.main, self.ctx, bd=3, relief=tk.GROOVE)
-        self.main_table.pack(side=tk.LEFT, fill=tk.BOTH)
+        # self.main_table = FrameSet(self.main, self.ctx, bd=3, relief=tk.GROOVE)
+        # self.main_table.pack(side=tk.LEFT, fill=tk.BOTH)
+
+
 
 
 if __name__ == '__main__':

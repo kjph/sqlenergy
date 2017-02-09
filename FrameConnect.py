@@ -15,6 +15,8 @@ class FrameConnect(tk.Frame):
     def __init__(self, parent, ctx, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
+        self.parent = parent
+
         #Context
         self.ctx = ctx
         self.global_config = ctx.global_config
@@ -26,7 +28,7 @@ class FrameConnect(tk.Frame):
         self.top_frame = Frame(self, bd=4)
         self.top_frame.pack(fill=tk.X)
 
-        self.mid_rule=Frame(self,height=1,width=350,bg="gray")
+        self.mid_rule=Frame(self,height=1,width=550,bg="gray")
         self.mid_rule.pack()
 
         self.mid_label = Label(self, text="OR Load Configuration", font="Arial 9 bold")
@@ -35,9 +37,6 @@ class FrameConnect(tk.Frame):
         self.mid_frame = Frame(self)
         self.mid_frame.pack(fill=tk.X)
 
-        self.bot_rule=Frame(self,height=1,width=350,bg="gray")
-        self.bot_rule.pack()
-
         self.bot_frame = Frame(self,bd=5)
         self.bot_frame.pack(fill=tk.X)
 
@@ -45,7 +44,7 @@ class FrameConnect(tk.Frame):
 
         self.init_ui_top()
         self.init_ui_mid()
-        self.init_ui_bot()
+
 
     def init_ui_mid(self):
         """
@@ -59,7 +58,7 @@ class FrameConnect(tk.Frame):
         self.file_label = Label(m, text="File:")
         self.file_label.pack(side=tk.LEFT, **self.global_config)
 
-        self.file_entry = Entry(m, textvariable=self.file_current_name, width=35)
+        self.file_entry = Entry(m, textvariable=self.file_current_name, width=65)
         self.file_entry.pack(fill=tk.X, side=tk.LEFT, **self.global_config)
 
         self.file_button = Button(m, text="Load", command=self.load_file, width=7)
@@ -79,7 +78,7 @@ class FrameConnect(tk.Frame):
         host_row, host_col = [2, 0]
         cred_row, cred_col = [3, 0]
         db_row, db_col = [4, 0]
-        connect_row, connect_col = [5,3]
+        connect_row, connect_col = [4,5]
 
         #Host
         self.host_label = Label(m, text="Host:")
@@ -119,28 +118,11 @@ class FrameConnect(tk.Frame):
         self.port_entry = Entry(m, textvariable=self.port_current)
         self.port_entry.grid(row=db_row, column=db_col+3, sticky='W')
 
-    def init_ui_bot(self):
-        """
-        For buttons
-        """
-
-        m = self.bot_frame
-
-        g_connect = {'row':1, 'column':1}
-        g_close = {'row':1, 'column':2  }
-
-        #Connect
-        # self.connect_button = Button(m, text="Connect", command=self.connect,
-        #                              width=10, bg="#428bca", fg="black",
-        #                              font="Default 9 bold")
         self.connect_button = Button(m, text="Ping", command=self.connect, width=10)
-        self.connect_button.pack(side=tk.RIGHT, **self.global_config)
+        self.connect_button.grid(row=connect_row, column=connect_col+1, **self.ctx.global_config)
 
         self.clear_button = Button(m, text='Clear', command=self.clear_settings, width=8)
-        self.clear_button.pack(side=tk.RIGHT, **self.global_config)
-
-        # self.close_button = Button(m, text="Close", command=self.exit, width=8)
-        # self.close_button.pack(side=tk.RIGHT, **self.global_config)
+        self.clear_button.grid(row=connect_row, column=connect_col, **self.ctx.global_config)
 
 
     def find_file(self):
@@ -198,18 +180,23 @@ class FrameConnect(tk.Frame):
         self.db_entry.configure(state='readonly')
         self.port_entry.configure(state='readonly')
 
+        self.update_context()
+
         self.status.set("Ready.")
+
+        self.connect()
 
     def connect(self):
         """
         Attempt to connect to server
         """
-        self.status.set("Connecting...")
+        self.status.set("Pinging...")
 
         self.update_context()
 
         if hquery.ping_database(**self.ctx.dbi):
             self.status.set("Success")
+            self.ctx.last_conn = 1
         else:
             self.status.set("Failed to Connect")
 
@@ -232,6 +219,7 @@ class FrameConnect(tk.Frame):
         self.port_current.set("3306")
         self.file_current_name.set("")
 
+        self.ctx.last_conn = 0
         self.update_context()
 
     def update_context(self):
