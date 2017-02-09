@@ -61,7 +61,7 @@ class TimeSeries():
                 if time not in self.time_value_map[series_type]:
                     self.time_value_map[series_type][time] = 0.0
 
-    def stream_handler(self, series_type, stream, time_format='%Y-%m-%d %H:%M:%S.%f', min_val=0, max_val=1000):
+    def stream_handler(self, series_type, stream, time_format='%Y-%m-%d %H:%M:%S.%f', min_val=0, max_val=100):
         """
         From an input stream, convert the data into time-series format
         """

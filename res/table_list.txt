@@ -10,5 +10,6 @@ emsj02_21_pv_labrealenergy, renewable
 emsj02_22_pv_officerealenergy, renewable
 emsj01_driverspbpv_micro_kwh, renewable
 emsj02_modbusrtunetwork_branch9residentialpv_kwh, renewable
-ems.emsj01_02_ms2realenergy, grid
+emsj02_15_wt1realenergy, renewable
+ems.emsj01_01_ms1realenergy, grid
 emsj02_18_mgtsrealenergy, gas
