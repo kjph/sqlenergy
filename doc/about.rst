@@ -10,3 +10,18 @@ formatting, thresholding values, and what type of energy source the table repres
 With this information a TimeSeries object is created, effectively a matrix where
 the rows represent the time axis, and the columns represent the various
 net energy consumptions for each unique source type.
+
+Last Updated. 2017 Feb 10.
+
+*******
+Authors
+*******
+
++------------------+-------------------------+
+| Name             | Contact                 |
++==================+=========================+
+| Jamie K.T. Phan  | jamie.kt.phan@gmail.com |
++------------------+-------------------------+
+| Henry Blumentals | hblumentals@outlook.com |
++------------------+-------------------------+
+
