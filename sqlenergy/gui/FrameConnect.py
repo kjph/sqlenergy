@@ -4,8 +4,6 @@ import ntpath
 import Tkinter as tk
 from Tkinter import Label, Button, Entry, Listbox, Frame, Canvas
 import tkFileDialog as filedialog
-import fetchInputs
-import hquery
 
 class FrameConnect(tk.Frame):
     """
@@ -157,7 +155,7 @@ class FrameConnect(tk.Frame):
         Get settings from file
         """
 
-        dbi = fetchInputs.database_inputs(self.data_file)
+        dbi = core.fetchInputs.database_inputs(self.data_file)
         if dbi == -1:
             self.status.set("ERR: File format not supported")
             return
@@ -194,7 +192,7 @@ class FrameConnect(tk.Frame):
 
         self.update_context()
 
-        if hquery.ping_database(**self.ctx.dbi):
+        if core.hquery.ping_database(**self.ctx.dbi):
             self.status.set("Success")
             self.ctx.last_conn = 1
         else:

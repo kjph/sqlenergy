@@ -2,8 +2,6 @@ import Tkinter as tk
 import ttk
 from Tkinter import Label, Frame, Listbox, Button, Entry
 import tkFileDialog as filedialog
-import hquery
-import fetchInputs
 
 class FrameTable(tk.Frame):
     """
@@ -108,7 +106,7 @@ class FrameTable(tk.Frame):
 
         if self.ctx.last_conn:
             self.fetched_listbox.delete(0, tk.END)
-            all_tables = hquery.get_all_tables(**self.ctx.dbi)
+            all_tables = core.hquery.get_all_tables(**self.ctx.dbi)
             for tab, col in enumerate(sorted(all_tables)):
                 self.fetched_listbox.insert(tab,col)
 
@@ -147,7 +145,7 @@ class FrameTable(tk.Frame):
         if not(user_open_req):
             return
 
-        tab_stat = fetchInputs.table_stat(user_open_req.name)
+        tab_stat = core.fetchInputs.table_stat(user_open_req.name)
 
 
         for tab, stat in tab_stat.iteritems():
