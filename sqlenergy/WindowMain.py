@@ -1,8 +1,9 @@
+import os
 import Tkinter as tk
 from Tkinter import Label, Frame
 from FrameConnect import FrameConnect
 from FrameTable import FrameTable
-from FrameSet import FrameSet
+from FrameQuery import FrameQuery
 import collections
 
 class Context():
@@ -11,6 +12,8 @@ class Context():
         self.dbi = {'host': None, 'user': None, 'passwd': None, 'db': None, 'port': 3306}
         self.tab_stat = collections.defaultdict(dict)
         self.last_conn = 0
+        self.output_file = None
+        self.dir_opt = {'initialdir':os.path.expanduser('~')}
 
     def add_table(self, table, **stat):
         if ('stype' not in stat or 'thr_min' not in stat or
@@ -19,10 +22,12 @@ class Context():
             logging.warning("CTX:ERR:Attempted to add table in bad format")
         else:
             self.tab_stat[table] = stat
+            logging.debug("CTX:add_table:%s:%s" % (table,stat))
 
     def del_table(self, table):
         self.tab_stat[table] = {}
         self.tab_stat.pop(table, None)
+        logging.debug("CTX:del_table:%s" % table)
 
 class WindowMain(tk.Frame):
     """
@@ -62,8 +67,8 @@ class WindowMain(tk.Frame):
         self.main_table = FrameTable(self.main, self.ctx, bd=2, relief=tk.GROOVE)
         self.main_table.pack(fill=tk.BOTH)
 
-        # self.main_table = FrameSet(self.main, self.ctx, bd=3, relief=tk.GROOVE)
-        # self.main_table.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.main_query = FrameQuery(self.main, self.ctx, bd=3, relief=tk.GROOVE)
+        self.main_query.pack(fill=tk.BOTH)
 
 if __name__ == '__main__':
     root = tk.Tk()

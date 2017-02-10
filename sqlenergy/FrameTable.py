@@ -119,16 +119,27 @@ class FrameTable(tk.Frame):
     def add_tables(self):
 
         source_type = self.select_type.get().strip()
+        thr_min = self.select_thr_min.get().strip()
+        thr_max = self.select_thr_max.get().strip()
         time_format = '%Y-%m-%d %H:%M:%S.%f'
+
+        if thr_min == '':
+            thr_min = 0.0
+        if thr_max == '':
+            thr_max = 100
+
+        thr_min = float(thr_min)
+        thr_max = float(thr_max)
 
         if source_type != '':
             selected_tables = [self.fetched_listbox.get(idx) for idx in self.fetched_listbox.curselection()]
-            for tab, col in enumerate(selected_tables):
+            for col, tab in enumerate(selected_tables):
+                if tab in self.ctx.tab_stat:
+                    self.clear_table(tab)
                 self.table_tree.insert("", col, text=tab, values=(source_type, thr_min, thr_max))
                 stat = {'stype': source_type, 'thr_min': thr_min,
                         'thr_max': thr_max, 'time_format': time_format}
                 self.ctx.add_table(tab, **stat)
-
 
     def load_tables(self):
 
@@ -153,4 +164,11 @@ class FrameTable(tk.Frame):
             table = self.table_tree.item(i)['text']
             self.ctx.del_table(table)
             self.table_tree.delete(i)
+
+    def clear_table(self, table_to_del):
+        for i in self.table_tree.get_children():
+            table = self.table_tree.item(i)['text']
+            if table == table_to_del:
+                self.ctx.del_table(table)
+                self.table_tree.delete(i)
 
