@@ -1,6 +1,5 @@
 import unittest
-from ..sqlenergy import hquery
-from ..sqlenergy import fetchInputs
+from sqlenergy.core import hquery, fetchInputs
 
 class GetTimeSeriesTest(unittest.TestCase):
 
