@@ -70,6 +70,14 @@ def ping_database(**dbi):
     return 1
 
 def get_all_tables(ending='realenergy', **dbi):
+    """Retrieve table list from database.
+
+    Parameters
+    ---------------
+    ending:     str, preliminary search tool,
+                finds tables that endswith ending
+    dbi:        dict, database info
+    """
 
     db = connect_mysql_converted(**dbi)
     if isinstance(db, tuple):
@@ -86,7 +94,7 @@ def get_all_tables(ending='realenergy', **dbi):
     logging.info("hquery:get_all_tables:SUCCESS")
     return all_tables
 
-def get_query_between_dates(table_name, start_date, end_date):
+def gen_query_between_dates(table_name, start_date, end_date):
     """Generate SQL query string.
 
     Parameters
@@ -109,15 +117,22 @@ def get_query_between_dates(table_name, start_date, end_date):
 
     return query
 
-def get_time_series(start_date, end_date, min_res, table_file='res/table_list.txt', cred_file='res/cred.json'):
+def get_time_series(start_date, end_date, min_res, tab_stat, **dbi):
+    """Return TimeSeries objects for tables specified in tab_stat.
+
+    Parameters
+    ---------------
+    start_date:     str; date to start query from
+    end_date:       str; date to end query
+    min_res:        int; time resolution of TimeSeries object in minutes
+    tab_stat:       dict; Table information
+    dbi:            dict; Database information
+
+    """
 
     #Connect to database and get cursor
-    dbi = fetchInputs.database_inputs(cred_file)
     db = connect_mysql_converted(**dbi)
     cursor = db.cursor()
-
-    #Specify which tables we want to run query over
-    tab_stat = fetchInputs.table_stat(table_file)
 
     #Get unique keys
     all_types = list(set([tab_stat[k]['stype'] for k in tab_stat]))
@@ -128,17 +143,16 @@ def get_time_series(start_date, end_date, min_res, table_file='res/table_list.tx
     #Run over all series types
     for tab, stat in tab_stat.iteritems():
 
-        query = get_query_between_dates(tab, start_date, end_date)
+        query = gen_query_between_dates(tab, start_date, end_date)
         cursor.execute(query)
 
         Series.stream_handler(stat['stype'], cursor.fetchall(),
                               stat['thr_min'], stat['thr_max'],
                               stat['time_format'])
 
-    return Series
-
     db.close()
 
+    return Series
 
 def main():
 
@@ -150,7 +164,9 @@ def main():
     end_date = '2017-01-01'
     output_file = 'rawdata.csv'
 
-    Series = get_time_series(start_date, end_date, min_res)
+    tab_stat = fetchInputs.table_stat(table_file)
+    dbi = fetchInputs.database_inputs(database_file)
+    Series = get_time_series(start_date, end_date, min_res, tab_stat, **dbi)
 
     #Write output
     with open(output_file, 'w') as fd:
