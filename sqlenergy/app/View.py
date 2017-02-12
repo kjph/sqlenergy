@@ -1,9 +1,11 @@
 import os
 import Tkinter as tk
 from Tkinter import Label, Frame
+import ViewModel
 from FrameConnect import FrameConnect
 from FrameTable import FrameTable
 from FrameSet import FrameSet
+from FrameQuery import FrameQuery
 
 class View(tk.Frame):
     """
@@ -23,22 +25,29 @@ class View(tk.Frame):
                           'font_title': "Arial 9 bold"}#Font of titles
         self.ctx.opts = {'dir': {'initialdir':os.path.expanduser('~')}}
 
-        #Master Frame to contain main widgets
-        self.main = Frame(self.parent)
-        self.main.pack()
+        #Frames (containers for UIs)
+        ViewModel.mk_frames_in(parent, ['main', 'status'],
+                       **{'fill': tk.BOTH})
 
-        #Status bar
-        self.status_label = Label(self.parent, textvariable=self.ctx.status, font="Default 8")
-        self.status_label.pack(anchor=tk.W)
+        f = ViewModel.get_frame(parent, 'main')
+        self.initUI_main(f)
 
-        self.initUI()
+        f = ViewModel.get_frame(parent, 'status')
+        self.initUI_status(f)
 
-    def initUI(self):
+    def initUI_main(self, parent):
         #UI Layout
-        self.frames = {'connect': FrameConnect(self.main, self.ctx, bd=2, relief=tk.GROOVE),
-                       'table': FrameTable(self.main, self.ctx, bd=2, relief=tk.GROOVE),
-                       'setting': FrameSet(self.main, self.ctx, bd=3, relief=tk.GROOVE)}
+        self.frames = {'connect': FrameConnect(parent, self.ctx, bd=2, relief=tk.GROOVE),
+                       'table': FrameTable(parent, self.ctx, bd=2, relief=tk.GROOVE),
+                       'setting': FrameSet(parent, self.ctx, bd=2, relief=tk.GROOVE),
+                       'query': FrameQuery(parent, self.ctx, bd=2, relief=tk.GROOVE)}
 
         self.frames['connect'].pack(fill=tk.BOTH)
         self.frames['table'].pack(fill=tk.BOTH)
         self.frames['setting'].pack(fill=tk.BOTH)
+        self.frames['query'].pack(fill=tk.BOTH)
+
+    def initUI_status(self, parent):
+        #Status bar
+        self.widgets = {'stat': Label(parent, textvariable=self.ctx.status, font="Default 8")}
+        self.widgets['stat'].pack(anchor=tk.W)

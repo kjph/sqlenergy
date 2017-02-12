@@ -23,10 +23,8 @@ class FrameConnect(tk.Frame):
         self.strvars = {}
 
         #Frames (containers for UIs)
-        frame_list = ['info', 'file']
-        self.frames = OrderedDict((f, Frame(self)) for f in frame_list)
-        for key, frame in self.frames.iteritems():
-            frame.pack(fill=tk.Y, side=tk.LEFT)
+        ViewModel.mk_frames_in(self, ['info', 'file'],
+                       **{'fill': tk.Y, 'side':tk.LEFT})
 
         #Create the regions
         self.initUI_info(self.frames['info'])
@@ -40,11 +38,9 @@ class FrameConnect(tk.Frame):
         self.strvars['dbi_file'] = tk.StringVar(value="")
 
         #Frames
-        parent.frames = OrderedDict((f, Frame(parent)) for f in ['top',
-                                                                  'main',
-                                                                  'core'])
-        for key, frame in parent.frames.iteritems():
-            frame.pack(fill=tk.X)
+        #Frames (containers for UIs)
+        ViewModel.mk_frames_in(parent, ['top', 'main', 'core'],
+                       **{'fill': tk.X})
 
         parent.widgets = {'top': Label(parent.frames['top'], text="OR Load Configuration",
                                             font=self.ctx.const['font_title']),

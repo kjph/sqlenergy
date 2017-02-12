@@ -4,7 +4,7 @@ from Tkinter import Frame, Label, Entry, Button
 import tkFileDialog as filedialog
 import ViewModel
 
-class FrameQuery(tk.Frame):
+class FrameSet(tk.Frame):
     """
     Frame for sending the query
     """
@@ -14,6 +14,7 @@ class FrameQuery(tk.Frame):
         self.parent = parent
         self.ctx = ctx
         ViewModel.set_update_func(ctx, staticmethod(self.update_context))
+        ViewModel.add_func_group(ctx, staticmethod(self.clear_all), "clearAll")
 
         self.strvars = {'outputDir': tk.StringVar(value="")}
 
@@ -28,7 +29,8 @@ class FrameQuery(tk.Frame):
         self.initUI_main(f)
 
     def initUI_top(self, parent):
-        parent.widgets = {'desp': Label(parent, text="Settings", font="Arial 9 bold")}
+        parent.widgets = {'desp': Label(parent, text="Settings",
+                                        font=self.ctx.const['font_title'])}
         parent.widgets['desp'].pack(anchor=tk.W)
 
     def initUI_main(self, parent):
@@ -129,3 +131,6 @@ class FrameQuery(tk.Frame):
         self.ctx.params['end_date'] = "%s-%s-%s" % (widets['end-y'].get().strip(),
                                                     widets['end-m'].get().strip(),
                                                     widets['end-d'].get().strip())
+
+    def clear_all(self):
+        pass

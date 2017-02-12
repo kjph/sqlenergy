@@ -3,6 +3,7 @@ res/cred.*
 
 #Outputs
 *.csv
+*.temp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
