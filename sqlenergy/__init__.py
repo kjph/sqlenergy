@@ -1,2 +1,2 @@
 from . import core
-from . import gui
+from . import app

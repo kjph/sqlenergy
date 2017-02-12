@@ -12,14 +12,15 @@ class FrameQuery(tk.Frame):
     def __init__(self, parent, ctx, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
 
+        self.parent = parent
         self.ctx = ctx
 
         #Pack the regions
-        self.top_label = Label(self, text="Query", font="Arial 9 bold")
+        self.top_label = Label(parent, text="Query", font="Arial 9 bold")
         self.top_label.pack(anchor=tk.W)
 
         #Core frame under title (split vertically)
-        self.main_frame = Frame(self)
+        self.main_frame = Frame(parent)
         self.main_frame.pack(fill=tk.X)
 
         #Frame for settings

@@ -1,5 +1,5 @@
 ========================
-ViewControllers (Frames)
+ViewModels (Frames)
 ========================
 
 ViewController Frames are always initialized with the definition:
