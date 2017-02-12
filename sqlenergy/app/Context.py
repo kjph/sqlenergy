@@ -17,15 +17,12 @@ class Context():
         self.stat_defaults = {'thr_min': 0.0,
                               'thr_max': 100.0,
                               'time_formate': '%Y-%m-%d %H:%M:%S.%f'}
+        self.param_list = ('outf_dir', 'outf_name', 'start_date', 'end_date')
 
         #Core Model Attributes
         self.dbi = {x: None for x in self.dbi_fields}
         self.tab_stat = collections.defaultdict(dict)
-
-        #intermediate ViewModel information
-        self.last_conn = 0
-        self.output_file = None
-        self.dir_opt = {'initialdir':os.path.expanduser('~')}
+        self.params = {x: None for x in self.param_list}
 
         #ViewModel function handles
         self.func = []

@@ -5,7 +5,7 @@ Application Design
 The application is packaged in the module ``app`` under the ``sqlenergy`` directory, and serves
 as the interface for the core functionality provided in the ``core`` module.
 
-A simple Model and ViewModel architecture is presented, where the Model contains
+A simple Model, View, and ViewModel architecture (MVVW) is presented, where the Model contains
 the relevant data for core functionality, whilst modular ViewModels manage both the
 interface and event handlers for a particular grouping of functions. A simple View component
 groups together the modular ViewModels together.

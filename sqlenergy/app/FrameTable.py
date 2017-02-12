@@ -56,7 +56,8 @@ class FrameTable(tk.Frame):
 
     def initUI_main_opts(self, parent):
 
-        ViewModel.mk_frames_in(parent, self.ctx.stat_fields)
+        ViewModel.mk_frames_in(parent, self.ctx.stat_fields,
+                               **{'fill': tk.X})
         for var in self.ctx.stat_fields:
             f = ViewModel.get_frame(parent, var)
             f.widgets = {'%s-label' % var: Label(f, text=var),

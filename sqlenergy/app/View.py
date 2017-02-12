@@ -1,8 +1,9 @@
+import os
 import Tkinter as tk
 from Tkinter import Label, Frame
 from FrameConnect import FrameConnect
 from FrameTable import FrameTable
-from FrameQuery import FrameQuery
+from FrameSet import FrameSet
 
 class View(tk.Frame):
     """
@@ -20,6 +21,7 @@ class View(tk.Frame):
         self.ctx.global_widget_conf = {'padx': 5, 'pady': 2}
         self.ctx.const = {'win_width': 760,#Window width
                           'font_title': "Arial 9 bold"}#Font of titles
+        self.ctx.opts = {'dir': {'initialdir':os.path.expanduser('~')}}
 
         #Master Frame to contain main widgets
         self.main = Frame(self.parent)
@@ -33,11 +35,10 @@ class View(tk.Frame):
 
     def initUI(self):
         #UI Layout
-        self.ctx.frames['connect'] = FrameConnect(self.main, self.ctx, bd=2, relief=tk.GROOVE)
-        self.ctx.frames['connect'].pack(fill=tk.BOTH)
+        self.frames = {'connect': FrameConnect(self.main, self.ctx, bd=2, relief=tk.GROOVE),
+                       'table': FrameTable(self.main, self.ctx, bd=2, relief=tk.GROOVE),
+                       'setting': FrameSet(self.main, self.ctx, bd=3, relief=tk.GROOVE)}
 
-        self.ctx.frames['table'] = FrameTable(self.main, self.ctx, bd=2, relief=tk.GROOVE)
-        self.ctx.frames['table'].pack(fill=tk.BOTH)
-
-        # self.ctx.frames['query'] = FrameQuery(self.main, self.ctx, bd=3, relief=tk.GROOVE)
-        # self.ctx.frames['query'].pack(fill=tk.BOTH)
+        self.frames['connect'].pack(fill=tk.BOTH)
+        self.frames['table'].pack(fill=tk.BOTH)
+        self.frames['setting'].pack(fill=tk.BOTH)

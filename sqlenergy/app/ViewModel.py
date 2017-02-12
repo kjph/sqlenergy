@@ -23,6 +23,12 @@ def get_widget(obj, frame_list, widget):
     f = get_frame(obj, frame_list)
     return f.widgets[widget]
 
+def pack_widgets(widgets, packing):
+
+    packing = OrderedDict(packing)
+    for wid, packopts in packing.iteritems():
+        widgets[wid].pack(**packopts)
+
 def mk_frames_in(obj, frame_list, **pack_opts):
 
     if isinstance(frame_list, str):
