@@ -125,12 +125,12 @@ class FrameSet(tk.Frame):
 
         f = ViewModel.get_frame(self, ['main', 'set', 'date'])
         widgets = f.widgets
-        self.ctx.params['start_date'] = "%s-%s-%s" % (widets['start-y'].get().strip(),
-                                                      widets['start-m'].get().strip(),
-                                                      widets['start-d'].get().strip())
-        self.ctx.params['end_date'] = "%s-%s-%s" % (widets['end-y'].get().strip(),
-                                                    widets['end-m'].get().strip(),
-                                                    widets['end-d'].get().strip())
+        self.ctx.params['start_date'] = "%s-%s-%s" % (widgets['start-y'].get().strip(),
+                                                      widgets['start-m'].get().strip(),
+                                                      widgets['start-d'].get().strip())
+        self.ctx.params['end_date'] = "%s-%s-%s" % (widgets['end-y'].get().strip(),
+                                                    widgets['end-m'].get().strip(),
+                                                    widgets['end-d'].get().strip())
 
     def clear_all(self):
         pass

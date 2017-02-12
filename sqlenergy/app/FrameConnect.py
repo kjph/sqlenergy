@@ -37,7 +37,6 @@ class FrameConnect(tk.Frame):
 
         self.strvars['dbi_file'] = tk.StringVar(value="")
 
-        #Frames
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(parent, ['top', 'main', 'core'],
                        **{'fill': tk.X})
@@ -89,6 +88,8 @@ class FrameConnect(tk.Frame):
             parent.widgets['%s-label' % var].pack(fill=tk.X, side=tk.LEFT, **self.ctx.global_widget_conf)
             parent.widgets[var] = Entry(parent.frames[var], textvariable=self.strvars[var])
             parent.widgets[var].pack(fill=tk.X, side=tk.LEFT, **self.ctx.global_widget_conf)
+
+        parent.widgets['passwd'].configure(show='*')
 
     def update_context(self):
         """
@@ -153,7 +154,6 @@ class FrameConnect(tk.Frame):
         logging.debug("FrameConnect:%s" % self.ctx.dbi)
 
         self.ctx.status.set("Ready.")
-        self.ctx.on_call('databaseLoad')
 
     def ping_database(self):
         """
