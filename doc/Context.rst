@@ -44,3 +44,46 @@ And in the ``A`` class
             self.ctx.on_call('someGroup')
 
             #Do more things
+
+******************
+Context Attributes
+******************
+
+The ``core`` model attributes are defined with immutable attributes in the Class definition
+of ``Context``. These immutable tuples ensures that object instances cannot vary these attributes
+and cause problems in the code. This is especially important when scaling, without which it would
+be difficult to track what the attribute is.
+
+Furthermore, these immutable objects define the structure of the core attributes, and should
+be used at all times. For example, for the database information attribute (``dbi``) we have the immutable tuple
+in ``Context``
+
+::
+
+    class Context():
+
+        def __init__(...):
+            self.dbi_fields = ('host', 'user', 'passwd', 'db', 'port')
+
+Now, all ViewModels concerned with ``dbi`` should create structures as follows:
+
+::
+
+    for field in self.ctx.dbi_fields:
+        dbi[field] = #the field value
+
+    self.ctx.dbi = dbi
+
+This ensures uniform usage of keys is used, and that the ``Context`` class can easily be modified
+to accommodate any changes in the ``core`` module
+
+It is recommended that non-core attributes be assigned to object instances and not the class itself.
+Furthermore, containers (dictionaries for example) should be used to group like-attributes.
+This prevents polluting the attribute space.
+
+An example container in an ``Context`` instance is:
+
+::
+
+        self.ctx.const = {'win_width': 760,#Window width
+                          'font_title': "Arial 9 bold"}#Font of titles

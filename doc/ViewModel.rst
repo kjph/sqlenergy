@@ -35,7 +35,7 @@ Code Structure for Layouts
 
 It is recommended that for each **complicated** frame, a ``def initUI_*()`` method
 is created. This method should be structured by first creating the frames' ``.widget()``
-dictionary, and then followed by the `.pack()`-ing order.
+dictionary, and then followed by the ``.pack()``-ing order.
 
 The motivation for this is, to separate the Model and View aspects into two distinct sections
 of code for each Frame. That is, the ``.widget()`` gives readers an understanding of the Model of a frame (the UI components, their functions and their properties), whilst the ``.pack()``-ing
@@ -67,8 +67,8 @@ Remarks on the ``Pack()`` layout manager
 ****************************************
 
 The ``.pack()`` method was selected because of its ease of use.
-Importantly, when ``.pack``-ing, a new widget does not need to know about the existence
-of other widgets or predefined grid, it simply is packed where called. This allows
+Importantly, when ``.pack``-ing, a new widget it does not need to know about the existence
+of other widgets or any predefined grid, it simply is packed where called. This allows
 for an easily expandable GUI if need be. However, because the ``.pack()`` method
 is relatively simple, extensive frames must be created to allow for more complicated
 layouts. As such the use of the ``ViewModel`` module is important to ensure scalability
@@ -101,4 +101,4 @@ below each other (``'top'``, ``'main'``, and ``'btn'``).
 Their own widgets are then created using the ``initUI_*()`` methods. We know that the frames split the parent frame into thirds, and to examine each third we simply look at the ``initUI_*()`` method
 for the frame in question.
 
-A similar structure should then exist for this method, and if frames are to be continuously nested; then in the same fashion.
+A similar structure should then exist for these methods, and if frames are to be continuously nested; then in the same fashion.
