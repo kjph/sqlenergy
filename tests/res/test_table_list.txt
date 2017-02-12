@@ -1,5 +1,1 @@
-full_row, renewable, -10.0, 10.0, %Y-%m-%d %H:%M:%S
-4_row, grid, 0, 1000
-3_row, gas, 0asdfj
-2_row, grid
-bad_row
+emsj01_01_pv_pb_eastwestrealenergy, renewable
