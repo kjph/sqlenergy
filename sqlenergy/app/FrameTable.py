@@ -161,6 +161,7 @@ class FrameTable(tk.Frame):
                 else:
                     self.ctx.status.set("Please enter in %s info" % var)
                     return
+            logging.debug("frametable:add_table:%s" % values)
 
         #Get the selected tables
         fetchList = ViewModel.get_widget(self, ['main', 'fetched'],
@@ -177,11 +178,11 @@ class FrameTable(tk.Frame):
                 self.clear_table(tab)
 
             #Add to selectTree
-            selectTree.insert("",col, text=tab, values=values)
+            disp_values = [ values[k] for k in self.ctx.stat_fields]
+            selectTree.insert("",col, text=tab, values=disp_values)
 
             #Add to context
-            for var, val in values.iteritems():
-                stat[var] = val
+            stat = {k:v for k,v in values.iteritems()}
             self.ctx.add_table(tab, **stat)
 
     def add_table_from_file(self):

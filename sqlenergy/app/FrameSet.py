@@ -115,7 +115,7 @@ class FrameSet(tk.Frame):
 
         self.ctx.params['outf_dir'] = user_dir_req
         self.strvars['outputDir'].set(user_dir_req)
-        logging.debug("FrameQuery:set_output_directory:%s" % self.ctx.output_dir)
+        logging.debug("FrameQuery:set_output_directory:%s" % self.ctx.params['outf_dir'])
 
         self.update_context()
 

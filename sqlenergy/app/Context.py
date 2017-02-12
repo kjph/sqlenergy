@@ -16,7 +16,7 @@ class Context():
         self.stat_fields = ('stype', 'thr_min', 'thr_max', 'time_format')
         self.stat_defaults = {'thr_min': 0.0,
                               'thr_max': 100.0,
-                              'time_formate': '%Y-%m-%d %H:%M:%S.%f'}
+                              'time_format': '%Y-%m-%d %H:%M:%S.%f'}
         self.param_list = ('outf_dir', 'outf_name', 'start_date', 'end_date')
 
         #Core Model Attributes

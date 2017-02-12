@@ -36,14 +36,14 @@ class FrameQuery(tk.Frame):
                    ('query', {'side': tk.LEFT})]
         ViewModel.pack_widgets(parent.widgets, packing)
 
-    def clear_all():
+    def clear_all(self):
         self.ctx.on_call('clearAll')
 
-    def do_query():
+    def do_query(self):
         self.ctx.update_context()
 
         min_res = 15
-        Series = get_time_series(self.ctx.params['start_date'],
+        Series = core.hquery.get_time_series(self.ctx.params['start_date'],
                                  self.ctx.params['end_date'],
                                  min_res,
                                  self.ctx.tab_stat,
