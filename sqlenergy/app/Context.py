@@ -18,7 +18,7 @@ class Context():
         self.stat_defaults = {'thr_min': 0.0,
                               'thr_max': 100.0,
                               'time_format': '%Y-%m-%d %H:%M:%S.%f'}
-        self.param_list = ('outf_dir', 'outf_name', 'start_date', 'end_date')
+        self.param_list = ('outf_dir', 'outf_name', 'start_date', 'end_date', 'outf_ext')
 
         #Core Model Attributes
         self.dbi = {x: None for x in self.dbi_fields}
@@ -26,7 +26,8 @@ class Context():
         self.params = {x: None for x in self.param_list}
 
         self.params['outf_dir'] = os.path.expanduser("~")
-        self.params['outf_name'] = 'sqlenergy_query_output.csv'
+        self.params['outf_name'] = 'sqlenergy_output'
+        self.params['outf_ext'] = '.csv'
 
         #ViewModel function handles
         self.func = []

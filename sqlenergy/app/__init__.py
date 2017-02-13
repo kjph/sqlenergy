@@ -1,3 +1,4 @@
+from .. import plot
 from .. import core
 from . import FrameConnect
 from . import FrameSet

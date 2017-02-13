@@ -26,7 +26,7 @@ class FrameConnect(tk.Frame):
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(self, [('info', {'fill': tk.BOTH, 'side':tk.LEFT}),
-                                       ('file', {'fill': tk.BOTH, 'side':tk.LEFT})])
+                                       ('file', {'fill': tk.BOTH, 'side':tk.RIGHT})])
 
         #Create the regions
         self.initUI_info(self.frames['info'])
@@ -37,7 +37,6 @@ class FrameConnect(tk.Frame):
         For loading configuration files
         """
 
-        parent.pack(side=tk.RIGHT)
         self.strvars['dbi_file'] = tk.StringVar(value="")
 
         #Frames (containers for UIs)

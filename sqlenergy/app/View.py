@@ -38,8 +38,7 @@ class View(tk.Frame):
         self.ctx.opts = {'dir': {'initialdir':os.path.expanduser('~')}}
 
         #Frames (containers for UIs)
-        ViewModel.mk_frames_in(parent, ['main', 'status'],
-                       {'fill': tk.BOTH})
+        ViewModel.mk_frames_in(parent, ['main', 'status'], {'fill': tk.BOTH})
 
         f = ViewModel.get_frame(parent, 'main')
         self.initUI_main(f)

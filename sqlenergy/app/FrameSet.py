@@ -19,7 +19,8 @@ class FrameSet(tk.Frame):
         ViewModel.add_func_group(ctx, staticmethod(self.clear_all), "clearAll")
 
         self.strvars = {'outf_dir': tk.StringVar(value="%s" % self.ctx.params['outf_dir']),
-                        'outf_name': tk.StringVar(value="%s" % self.ctx.params['outf_name'])}
+                        'outf_name': tk.StringVar(value="%s" % self.ctx.params['outf_name']),
+                        'outf_ext': tk.StringVar(value="%s" % self.ctx.params['outf_ext'])}
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(self, ['top', 'main'],
@@ -98,10 +99,12 @@ class FrameSet(tk.Frame):
                           'dir-btn':        Button(parent, text="...", command=self.set_output_dir,
                                                    width=5),
                           'file-label':     Label(parent, text="Filename:"),
-                          'file-entry':     Entry(parent, width=30, textvariable=self.strvars['outf_name'])}
+                          'file-entry':     Entry(parent, width=20, textvariable=self.strvars['outf_name']),
+                          'file-ext':       Label(parent, textvariable=self.strvars['outf_ext'])}
 
         packing = [('dir-label',    {'side': tk.LEFT}),
                    ('dir-current',  {'side': tk.LEFT}),
+                   ('file-ext',     {'side': tk.RIGHT, 'padx': (0, 20)}),
                    ('file-entry',   {'side': tk.RIGHT}),
                    ('file-label',   {'side': tk.RIGHT}),
                    ('dir-btn',      {'side': tk.RIGHT})]
@@ -133,6 +136,7 @@ class FrameSet(tk.Frame):
 
         outf_name = ViewModel.get_widget(self, ['main', 'set', 'file'],
                                          'file-entry').get().strip()
+        self.ctx.params['outf_name'] = outf_name
 
         f = ViewModel.get_frame(self, ['main', 'set', 'date'])
         widgets = f.widgets

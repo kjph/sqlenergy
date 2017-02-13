@@ -3,6 +3,7 @@ import Tkinter as tk
 from Tkinter import Frame, Label, Button
 import ViewModel
 from . import core
+from . import plot
 from ttk import *
 
 class FrameQuery(tk.Frame):
@@ -51,6 +52,8 @@ class FrameQuery(tk.Frame):
             self.ctx.status.set("something went wrong")
             return 0
 
+        self.ctx.status.set("Running Query...")
+
         min_res = 15
         Series = core.hquery.get_time_series(self.ctx.params['start_date'],
                                  self.ctx.params['end_date'],
@@ -63,8 +66,10 @@ class FrameQuery(tk.Frame):
             return
 
         #Write output
-        outf = os.path.join(self.ctx.params['outf_dir'], self.ctx.params['outf_name'])
+        outf = os.path.join(self.ctx.params['outf_dir'], self.ctx.params['outf_name'] + self.ctx.params['outf_ext'])
         with open(outf, 'w') as fd:
             fd.write(str(Series))
+
+        plot.test.plot_time_series(Series)
 
         self.ctx.status.set("Query Complete")
