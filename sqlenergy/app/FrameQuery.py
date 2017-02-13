@@ -3,6 +3,7 @@ import Tkinter as tk
 from Tkinter import Frame, Label, Button
 import ViewModel
 from . import core
+from ttk import *
 
 class FrameQuery(tk.Frame):
 

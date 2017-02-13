@@ -4,6 +4,7 @@ import Tkinter as tk
 from Tkinter import Frame, Label, Entry, Button
 import tkFileDialog as filedialog
 import ViewModel
+from ttk import *
 
 class FrameSet(tk.Frame):
     """
@@ -65,30 +66,37 @@ class FrameSet(tk.Frame):
                           'end-m-lab':      Label(parent, text="M"),
                           'end-m':          Entry(parent, width=3),
                           'end-d-lab':      Label(parent, text="D"),
-                          'end-d':          Entry(parent, width=3)}
+                          'end-d':          Entry(parent, width=3),
+                          'min-res-lab':    Label(parent, text="Minute Res."),
+                          'min-res':        Entry(parent, width=5)}
 
         packing = [('start-lab',   {'side':tk.LEFT}),
                    ('start-y-lab', {'side':tk.LEFT}),
-                   ('start-y',     {'side':tk.LEFT}),
+                   ('start-y',     {'side':tk.LEFT, 'padx': (0,5)}),
                    ('start-m-lab', {'side':tk.LEFT}),
-                   ('start-m',     {'side':tk.LEFT}),
+                   ('start-m',     {'side':tk.LEFT, 'padx': (0,5)}),
                    ('start-d-lab', {'side':tk.LEFT}),
-                   ('start-d',     {'side':tk.LEFT}),
-                   ('end-d',       {'side':tk.RIGHT}),
-                   ('end-d-lab',   {'side':tk.RIGHT}),
-                   ('end-m',       {'side':tk.RIGHT}),
-                   ('end-m-lab',   {'side':tk.RIGHT}),
-                   ('end-y',       {'side':tk.RIGHT}),
-                   ('end-y-lab',   {'side':tk.RIGHT}),
-                   ('end-lab',     {'side':tk.RIGHT})]
+                   ('start-d',     {'side':tk.LEFT, 'padx': (0,30)}),
+                   ('end-lab',     {'side':tk.LEFT}),
+                   ('end-y-lab',   {'side':tk.LEFT}),
+                   ('end-y',       {'side':tk.LEFT, 'padx': (0, 5)}),
+                   ('end-m-lab',   {'side':tk.LEFT}),
+                   ('end-m',       {'side':tk.LEFT, 'padx': (0, 5)}),
+                   ('end-d-lab',   {'side':tk.LEFT}),
+                   ('end-d',       {'side':tk.LEFT}),
+                   ('min-res',     {'side':tk.RIGHT}),
+                   ('min-res-lab', {'side':tk.RIGHT})
+                   ]
         ViewModel.pack_widgets(parent.widgets, packing)
 
     def initUI_main_set_file(self, parent):
 
         parent.widgets = {'dir-label':      Label(parent, text="Output Directory:"),
-                          'dir-current':    Entry(parent, textvariable=self.strvars['outf_dir'],
-                                                  state="readonly", width=45),
-                          'dir-btn':        Button(parent, text="...", command=self.set_output_dir),
+                          'dir-current':    tk.Entry(parent, textvariable=self.strvars['outf_dir'],
+                                                  state="readonly", width=45,
+                                                  bd=2),
+                          'dir-btn':        Button(parent, text="...", command=self.set_output_dir,
+                                                   width=5),
                           'file-label':     Label(parent, text="Filename:"),
                           'file-entry':     Entry(parent, width=30, textvariable=self.strvars['outf_name'])}
 

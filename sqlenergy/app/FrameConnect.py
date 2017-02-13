@@ -7,6 +7,7 @@ from Tkinter import Label, Button, Entry, Listbox, Frame, Canvas
 import tkFileDialog as filedialog
 from . import core
 import ViewModel
+from ttk import *
 
 class FrameConnect(tk.Frame):
     """
@@ -99,11 +100,11 @@ class FrameConnect(tk.Frame):
 
         for var in self.ctx.dbi_fields:
             val = self.frames['info'].widgets[var].get().strip()
-            if val != '' or clear:
+            if val != '':
                 self.ctx.dbi[var] = val
             elif var in self.ctx.dbi_defaults:
                 self.ctx.dbi[var] = self.ctx.dbi_defaults[var]
-            else:
+            elif not(clear):
                 self.ctx.status.set("Please insert value for %s" % var)
                 return 0
         return 1
@@ -133,7 +134,7 @@ class FrameConnect(tk.Frame):
 
         if not(os.path.isfile(target)):
             self.ctx.status.set("ERR: File not found")
-            return 0 
+            return 0
         else:
             self.ctx.dbi_file = target
             self.load_dbi_file()

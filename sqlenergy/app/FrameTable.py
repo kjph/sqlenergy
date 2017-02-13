@@ -6,6 +6,7 @@ from Tkinter import Label, Frame, Listbox, Button, Entry
 import tkFileDialog as filedialog
 from . import core
 import ViewModel
+from ttk import *
 
 class FrameTable(tk.Frame):
     """
@@ -225,13 +226,19 @@ class FrameTable(tk.Frame):
             selectTree.delete(i)
 
     def del_table_selected(self):
+        """
+        Remove the current selection for SelectTree widget
+        """
 
         selectTree = ViewModel.get_widget(self, ['main', 'selected'],
                                   'selectTree')
         curItem = selectTree.focus()
-        table = curItem['text']
-        self.ctx.del_table(table)
-        selectTree.delete(curItem)
+        if curItem == '':
+            pass#No selection
+        else:
+            table = selectTree.item(curItem)['text']
+            self.ctx.del_table(table)
+            selectTree.delete(curItem)
 
     def del_table(self, table_to_del):
 

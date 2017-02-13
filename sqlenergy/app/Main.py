@@ -3,6 +3,7 @@ import logging
 import Tkinter as tk
 from Context import Context
 from View import View
+from ttk import *
 
 class Main():
     def __init__(self):

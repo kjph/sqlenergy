@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import Tkinter as tk
 from Tkinter import Frame
+from ttk import *
 
 def add_func_group(context, func, group):
     context.funcgroup[group].append(func)

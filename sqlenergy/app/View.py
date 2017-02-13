@@ -6,6 +6,7 @@ from FrameConnect import FrameConnect
 from FrameTable import FrameTable
 from FrameSet import FrameSet
 from FrameQuery import FrameQuery
+from ttk import *
 
 class View(tk.Frame):
     """
@@ -16,6 +17,17 @@ class View(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.parent.title("CSIRO Energy Analyzer")
+
+        #Appearance
+        self.parent.Style = Style()
+        self.parent.Style.theme_use("xpnative")
+        self.parent.Style.configure('.', font=('Helvetica', 9))
+        self.parent.Style.map('TButton',
+                              background=[('disabled','#d9d9d9'), ('active','#ececec')],
+                              foreground=[('disabled','#a3a3a3')],
+                              relief=[('pressed', '!disabled', 'sunken')])
+        self.parent.Style.configure('TEntry',
+                              foreground='#a3a3a3')
 
         #Context container to pass to children
         self.ctx = ctx
