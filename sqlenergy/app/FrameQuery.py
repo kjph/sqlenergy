@@ -44,7 +44,9 @@ class FrameQuery(tk.Frame):
         Get all context information and attempt query
         """
 
-        self.ctx.update_context()
+        r = self.ctx.update_context()
+        if not(r):
+            return 0
 
         min_res = 15
         Series = core.hquery.get_time_series(self.ctx.params['start_date'],

@@ -17,7 +17,8 @@ class FrameSet(tk.Frame):
         ViewModel.set_update_func(ctx, staticmethod(self.update_context))
         ViewModel.add_func_group(ctx, staticmethod(self.clear_all), "clearAll")
 
-        self.strvars = {'outputDir': tk.StringVar(value="")}
+        self.strvars = {'outf_dir': tk.StringVar(value="%s" % self.ctx.params['outf_dir']),
+                        'outf_name': tk.StringVar(value="%s" % self.ctx.params['outf_name'])}
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(self, ['top', 'main'],
@@ -85,11 +86,11 @@ class FrameSet(tk.Frame):
     def initUI_main_set_file(self, parent):
 
         parent.widgets = {'dir-label':      Label(parent, text="Output Directory:"),
-                          'dir-current':    Entry(parent, textvariable=self.strvars['outputDir'],
+                          'dir-current':    Entry(parent, textvariable=self.strvars['outf_dir'],
                                                   state="readonly", width=45),
                           'dir-btn':        Button(parent, text="...", command=self.set_output_dir),
                           'file-label':     Label(parent, text="Filename:"),
-                          'file-entry':     Entry(parent, width=30)}
+                          'file-entry':     Entry(parent, width=30, textvariable=self.strvars['outf_name'])}
 
         packing = [('dir-label',    {'side': tk.LEFT}),
                    ('dir-current',  {'side': tk.LEFT}),
@@ -115,14 +116,15 @@ class FrameSet(tk.Frame):
             return
 
         self.ctx.params['outf_dir'] = user_dir_req
-        self.strvars['outputDir'].set(user_dir_req)
+        self.strvars['outf_dir'].set(user_dir_req)
         logging.debug("FrameQuery:set_output_directory:%s" % self.ctx.params['outf_dir'])
 
         self.update_context()
 
     def update_context(self, clear=False):
-        self.ctx.params['outf_name'] = ViewModel.get_widget(self, ['main', 'set', 'file'],
-                                                            'file-entry').get().strip()
+
+        outf_name = ViewModel.get_widget(self, ['main', 'set', 'file'],
+                                         'file-entry').get().strip()
 
         f = ViewModel.get_frame(self, ['main', 'set', 'date'])
         widgets = f.widgets
@@ -142,6 +144,8 @@ class FrameSet(tk.Frame):
                       'end_d': (1, 31)}
 
         for key, val in dates.iteritems():
+            if val == None:
+                continue
             if not(val.isdigit()):
                 self.ctx.status.set("Please enter in numeric values")
                 return 0
@@ -149,10 +153,10 @@ class FrameSet(tk.Frame):
                 dates[key] = int(val)
 
             if val < date_thres[key][0]:
-                self.ctx.status("%s is less than its threshold of %i" % (key, date_thres[key][0]))
+                self.ctx.status.set("%s is less than its threshold of %i" % (key, date_thres[key][0]))
                 return 0
             if val > date_thres[key][1]:
-                 self.ctx.status("%s is greater than its threshold of %i" % (key, date_thres[key][1]))
+                 self.ctx.status.set("%s is greater than its threshold of %i" % (key, date_thres[key][1]))
 
         self.ctx.params['start_date'] = "%s-%s-%s" % (dates['start_y'], dates['start_m'], dates['start_d'])
         self.ctx.params['end_date'] = "%s-%s-%s" % (dates['end_y'], dates['end_m'], dates['end_d'])

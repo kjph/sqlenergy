@@ -177,7 +177,7 @@ class FrameTable(tk.Frame):
 
             #Remove table from selectTree if already exists
             if tab in self.ctx.tab_stat:
-                self.clear_table(tab)
+                self.del_table(tab)
 
             #Add to selectTree
             disp_values = [ values[k] for k in self.ctx.stat_fields]

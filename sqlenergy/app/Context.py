@@ -25,6 +25,9 @@ class Context():
         self.tab_stat = collections.defaultdict(dict)
         self.params = {x: None for x in self.param_list}
 
+        self.params['outf_dir'] = os.path.expanduser("~")
+        self.params['outf_name'] = 'sqlenergy_query_output.csv'
+
         #ViewModel function handles
         self.func = []
         self.funcgroup = collections.defaultdict(list)
