@@ -1,15 +1,25 @@
 from collections import OrderedDict
-import Tkinter as tk
 from Tkinter import Frame
 from ttk import *
 
 def add_func_group(context, func, group):
+    """
+    Function binding to context for on_call method
+    """
+
     context.funcgroup[group].append(func)
 
 def set_update_func(context, func):
+    """
+    Function binding to context for global update
+    """
+
     context.func.append(func)
 
 def get_frame(obj, frame_list):
+    """
+    return frame specifed in frame_list
+    """
 
     if isinstance(frame_list, str):
         frame_list = [frame_list]
@@ -20,6 +30,9 @@ def get_frame(obj, frame_list):
     return obj
 
 def get_widget(obj, frame_list, widget):
+    """
+    Return widget under the frame tree
+    """
 
     f = get_frame(obj, frame_list)
     return f.widgets[widget]
