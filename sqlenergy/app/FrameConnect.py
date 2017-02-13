@@ -18,6 +18,7 @@ class FrameConnect(tk.Frame):
         self.parent = parent
         self.ctx = ctx
         ViewModel.set_update_func(ctx, staticmethod(self.update_context))
+        ViewModel.add_func_group(ctx, staticmethod(self.clear_context), 'clearAll')
 
         #'Global' string variables
         self.strvars = {}
@@ -91,13 +92,21 @@ class FrameConnect(tk.Frame):
 
         parent.widgets['passwd'].configure(show='*')
 
-    def update_context(self):
+    def update_context(self, clear=False):
         """
         Output to Context
         """
 
         for var in self.ctx.dbi_fields:
-            self.ctx.dbi[var] = self.frames['info'].widgets[var].get().strip()
+            val = self.frames['info'].widgets[var].get().strip()
+            if val != '' or clear:
+                self.ctx.dbi[var] = val
+            elif var in self.ctx.dbi_defaults:
+                self.ctx.dbi[var] = self.ctx.dbi_defaults[var]
+            else:
+                self.ctx.status.set("Please insert value for %s" % var)
+                return 0
+        return 1
 
     def get_dbi_file_dialog(self):
         """
@@ -107,53 +116,66 @@ class FrameConnect(tk.Frame):
         target = filedialog.askopenfile()
 
         if not(target):
-            return
+            return 0
         else:
             self.ctx.dbi_file = target.name
             self.strvars['dbi_file'].set(self.ctx.dbi_file)
-            self.load_dbi_file()
+            r = self.load_dbi_file()
+            return r
 
     def get_dbi_file_user_input(self):
         """
         For loading file from user entered string
         """
 
-        target = self.file_entry.get()
+        wid = ViewModel.get_widget(self, 'file', 'entry')
+        target = wid.get()
 
         if not(os.path.isfile(target)):
             self.ctx.status.set("ERR: File not found")
-            return
+            return 0 
         else:
             self.ctx.dbi_file = target
             self.load_dbi_file()
+
+        return 1
 
     def load_dbi_file(self):
         """
         Get settings from file
         """
 
+        if self.ctx.dbi_file == None:
+            self.ctx.status.set("Please enter the path to your config file")
+            return 0
+
         dbi = core.fetchInputs.database_inputs(self.ctx.dbi_file)
 
         #If file could not be read
         if dbi == -1:
             self.ctx.status.set("ERR: File format not supported")
-            return
+            return 0
 
         for var in self.ctx.dbi_fields:
 
             #If missing fields
             if var not in dbi:
                 self.ctx.status.set("ERR: Incomplete config")
-                return
+                return 0
 
             #Set the values
             self.strvars[var].set(dbi[var])
             self.frames['info'].widgets[var].configure(state='readonly')
 
-        self.update_context()
         logging.debug("FrameConnect:%s" % self.ctx.dbi)
 
-        self.ctx.status.set("Ready.")
+        if self.update_context():
+            self.ctx.status.set("Ready.")
+        else:
+            return 0
+
+        self.ctx.on_call('databaseLoad')
+        return 1
 
     def ping_database(self):
         """
@@ -161,13 +183,16 @@ class FrameConnect(tk.Frame):
         """
 
         self.ctx.status.set("Pinging...")
-        self.update_context()
+        if not(self.update_context()):
+            return 0
 
         if core.hquery.ping_database(**self.ctx.dbi):
             self.ctx.status.set("Success")
             self.ctx.on_call('databaseLoad')
+            return 1
         else:
             self.ctx.status.set("Failed to Connect")
+            return 0
 
     def clear_context(self):
         """
@@ -181,5 +206,7 @@ class FrameConnect(tk.Frame):
         self.ctx.dbi_file = None
         self.strvars['dbi_file'].set("")
 
-        self.update_context()
+        self.update_context(True)#Clear mode
         self.ctx.status.set("Cleared. Ready.")
+
+        return 1

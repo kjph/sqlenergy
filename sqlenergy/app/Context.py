@@ -13,6 +13,7 @@ class Context():
         #Specify immutable object
         #That defines the structure of Core Model Attributes
         self.dbi_fields = ('host', 'user', 'passwd', 'db', 'port')
+        self.dbi_defaults = {'port': 3306}
         self.stat_fields = ('stype', 'thr_min', 'thr_max', 'time_format')
         self.stat_defaults = {'thr_min': 0.0,
                               'thr_max': 100.0,
@@ -46,8 +47,10 @@ class Context():
         logging.debug("CTX:del_table:%s" % table)
 
     def update_context(self):
+        r = 1
         for f in self.func:
-            f.__func__()
+            r = r and f.__func__()
+        return r
 
     def on_call(self, call):
 

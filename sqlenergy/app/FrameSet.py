@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 import Tkinter as tk
 from Tkinter import Frame, Label, Entry, Button
 import tkFileDialog as filedialog
@@ -98,7 +99,7 @@ class FrameSet(tk.Frame):
         ViewModel.pack_widgets(parent.widgets, packing)
 
     def initUI_main_btn(self, parent):
-        parent.widgets = {'clear':  Button(parent, text="Clear", width=8)}
+        parent.widgets = {'clear':  Button(parent, text="Clear", width=8, command=self.clear_all)}
 
         packing = [('clear',    {'side': tk.BOTTOM})]
         ViewModel.pack_widgets(parent.widgets, packing)
@@ -119,18 +120,56 @@ class FrameSet(tk.Frame):
 
         self.update_context()
 
-    def update_context(self):
+    def update_context(self, clear=False):
         self.ctx.params['outf_name'] = ViewModel.get_widget(self, ['main', 'set', 'file'],
                                                             'file-entry').get().strip()
 
         f = ViewModel.get_frame(self, ['main', 'set', 'date'])
         widgets = f.widgets
-        self.ctx.params['start_date'] = "%s-%s-%s" % (widgets['start-y'].get().strip(),
-                                                      widgets['start-m'].get().strip(),
-                                                      widgets['start-d'].get().strip())
-        self.ctx.params['end_date'] = "%s-%s-%s" % (widgets['end-y'].get().strip(),
-                                                    widgets['end-m'].get().strip(),
-                                                    widgets['end-d'].get().strip())
+        dates = {'start_y': widgets['start-y'].get().strip(),
+                 'start_m': widgets['start-m'].get().strip(),
+                  'start_d': widgets['start-d'].get().strip(),
+                  'end_y': widgets['end-y'].get().strip(),
+                  'end_m': widgets['end-m'].get().strip(),
+                  'end_d': widgets['end-d'].get().strip()}
+
+        max_yr = datetime.now().year
+        date_thres = {'start_y': (0, max_yr),
+                      'start_m': (1, 12),
+                      'start_d': (1, 31),
+                      'end_y': (0, max_yr),
+                      'end_m': (1, 12),
+                      'end_d': (1, 31)}
+
+        for key, val in dates.iteritems():
+            if not(val.isdigit()):
+                self.ctx.status.set("Please enter in numeric values")
+                return 0
+            else:
+                dates[key] = int(val)
+
+            if val < date_thres[key][0]:
+                self.ctx.status("%s is less than its threshold of %i" % (key, date_thres[key][0]))
+                return 0
+            if val > date_thres[key][1]:
+                 self.ctx.status("%s is greater than its threshold of %i" % (key, date_thres[key][1]))
+
+        self.ctx.params['start_date'] = "%s-%s-%s" % (dates['start_y'], dates['start_m'], dates['start_d'])
+        self.ctx.params['end_date'] = "%s-%s-%s" % (dates['end_y'], dates['end_m'], dates['end_d'])
 
     def clear_all(self):
-        pass
+        """
+        Remove all information from this Frame
+        """
+
+        f = ViewModel.get_frame(self, ['main', 'set', 'date'])
+        widgets = f.widgets
+        widgets['start-y'].delete(0, 'end')
+        widgets['start-m'].delete(0, 'end')
+        widgets['start-d'].delete(0, 'end')
+        widgets['end-y'].delete(0, 'end')
+        widgets['end-m'].delete(0, 'end')
+        widgets['end-d'].delete(0, 'end')
+        ViewModel.get_widget(self, ['main', 'set', 'file'],
+                             'file-entry').delete(0, 'end')
+        self.update_context(True)

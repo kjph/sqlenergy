@@ -46,6 +46,11 @@ def table_stat(loc):
     """
 
     r = collections.defaultdict(dict)
+
+    if not(loc.endswith('.csv') or loc.endswith('.txt')):
+        logging.error("fetchInputs:table_stat:Incorrect file format for file %s" % loc)
+        return -1
+
     with open(loc, 'r') as fd:
         reader = csv.reader(fd)
 

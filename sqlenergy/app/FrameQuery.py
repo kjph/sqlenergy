@@ -40,6 +40,10 @@ class FrameQuery(tk.Frame):
         self.ctx.on_call('clearAll')
 
     def do_query(self):
+        """
+        Get all context information and attempt query
+        """
+
         self.ctx.update_context()
 
         min_res = 15
@@ -49,7 +53,13 @@ class FrameQuery(tk.Frame):
                                  self.ctx.tab_stat,
                                  **self.ctx.dbi)
 
+        if Series == 0:
+            self.ctx.status.set("Query failed")
+            return
+
         #Write output
         outf = os.path.join(self.ctx.params['outf_dir'], self.ctx.params['outf_name'])
         with open(outf, 'w') as fd:
             fd.write(str(Series))
+
+        self.ctx.status.set("Query Complete")

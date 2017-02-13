@@ -17,6 +17,7 @@ class FrameTable(tk.Frame):
         self.parent = parent
         self.ctx = ctx
         ViewModel.add_func_group(ctx, staticmethod(self.fetch_table_from_db), 'databaseLoad')
+        ViewModel.add_func_group(ctx, staticmethod(self.clear_all), 'clearAll')
 
         self.consts = {'selectTreeCount': 0}
 
@@ -118,13 +119,13 @@ class FrameTable(tk.Frame):
         - dbi (update via connect.update_context())
         """
 
-        self.ctx.update_context()
+        r = self.ctx.update_context()
 
         #Check information is filled out
         for var in self.ctx.dbi_fields:
             if self.ctx.dbi[var] == '':
-                self.ctx.status.set("Please enter in Database information")
-                return
+                self.ctx.status.set("Please insert value for %s" % var)
+                return 0
 
         #Attempt to fetch tables
         all_tables = core.hquery.get_all_tables(**self.ctx.dbi)
@@ -134,7 +135,7 @@ class FrameTable(tk.Frame):
             logging.warning('FrameTable:fetch_table_from_db:failed to get table list for host:%s' %
                             self.ctx.dbi['host'])
             self.ctx.status.set("Failed to fetch table list")
-            return
+            return 0
 
         #Update listbox
         wid = ViewModel.get_widget(self, ['main', 'fetched'],
@@ -145,6 +146,7 @@ class FrameTable(tk.Frame):
 
         wid.update_idletasks()
         self.ctx.status.set("Fetched")
+        return 1
 
     def add_table_selected(self):
 
@@ -160,7 +162,7 @@ class FrameTable(tk.Frame):
                     values[var] = self.ctx.stat_defaults[var]
                 else:
                     self.ctx.status.set("Please enter in %s info" % var)
-                    return
+                    return 0
             logging.debug("frametable:add_table:%s" % values)
 
         #Get the selected tables
@@ -185,13 +187,18 @@ class FrameTable(tk.Frame):
             stat = {k:v for k,v in values.iteritems()}
             self.ctx.add_table(tab, **stat)
 
+        return 1
+
     def add_table_from_file(self):
 
         user_open_req = filedialog.askopenfile()
         if not(user_open_req):
-            return
+            return 0
 
         tab_stat = core.fetchInputs.table_stat(user_open_req.name)
+        if tab_stat == -1:
+            self.ctx.status.set("Could not load table file")
+            return 0
 
         values = []
         for tab, stat in tab_stat.iteritems():
@@ -204,6 +211,8 @@ class FrameTable(tk.Frame):
                               text=tab, values=values)
             self.ctx.add_table(tab, **stat)
             self.consts['selectTreeCount'] += 1
+
+        return 1
 
     def del_table_all(self):
 
@@ -234,3 +243,13 @@ class FrameTable(tk.Frame):
             if table == table_to_del:
                 self.ctx.del_table(table)
                 selectTree.delete(i)
+
+    def clear_all(self):
+        """
+        Clear both tables
+        """
+        self.del_table_all()
+        wid = ViewModel.get_widget(self, ['main', 'fetched'],
+                         'fetchList')
+        wid.delete(0, tk.END)
+        return 1
