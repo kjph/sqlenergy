@@ -14,21 +14,20 @@ class FrameQuery(tk.Frame):
         self.ctx = ctx
 
         #Frames (containers for UIs)
-        ViewModel.mk_frames_in(self, ['top', 'main'],
-                       {'fill': tk.BOTH, 'side': tk.LEFT})
+        ViewModel.mk_frames_in(self, [('top', {'fill': tk.BOTH, 'side': tk.LEFT}),
+                                      ('main', {'fill': tk.BOTH, 'side': tk.RIGHT})])
 
         f = ViewModel.get_frame(self, 'top')
         self.initUI_top(f)
 
         f = ViewModel.get_frame(self, 'main')
-        f.pack(side=tk.RIGHT)#Repack main class
         self.initUI_main(f)
 
     def initUI_top(self, parent):
 
         parent.widgets = {'desp': Label(parent, text="Run Query",
                                         font=self.ctx.const['font_title'])}
-        parent.widgets['desp'].pack(anchor=tk.W)
+        parent.widgets['desp'].pack()
 
     def initUI_main(self, parent):
 

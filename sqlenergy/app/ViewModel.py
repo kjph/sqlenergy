@@ -52,7 +52,14 @@ def pack_widgets(widgets, packing, globalconf=None):
     globalconf: Specify a global dictionary to append to all packopts (extconf keys are taken priority)
     """
 
-    packing = OrderedDict(packing)
+    corrected_packing = []
+    for p in packing:
+        if isinstance(p, tuple):
+            corrected_packing.append(p)
+        elif isinstance(p, str):
+            corrected_packing.append((p, None))
+
+    packing = OrderedDict(corrected_packing)
     for wid, packopts in packing.iteritems():
 
         if packopts == None:

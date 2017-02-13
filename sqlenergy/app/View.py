@@ -26,8 +26,9 @@ class View(tk.Frame):
                               background=[('disabled','#d9d9d9'), ('active','#ececec')],
                               foreground=[('disabled','#a3a3a3')],
                               relief=[('pressed', '!disabled', 'sunken')])
-        self.parent.Style.configure('TEntry',
-                              foreground='#a3a3a3')
+        self.parent.Style.configure('Title.TLabel',
+                                    font="Arial 9 bold")
+
 
         #Context container to pass to children
         self.ctx = ctx

@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 import Tkinter as tk
-from Tkinter import Frame, Label, Entry, Button
+from Tkinter import Frame, Label, Entry, Button, Radiobutton
 import tkFileDialog as filedialog
 import ViewModel
 from ttk import *
@@ -23,18 +23,15 @@ class FrameSet(tk.Frame):
                         'outf_ext': tk.StringVar(value="%s" % self.ctx.params['outf_ext'])}
 
         #Frames (containers for UIs)
-        ViewModel.mk_frames_in(self, ['top', 'main'],
+        ViewModel.mk_frames_in(self, ['top', 'main', 'ext'],
                        {'fill': tk.BOTH})
 
-        f = ViewModel.get_frame(self, 'top')
-        self.initUI_top(f)
-
-        f = ViewModel.get_frame(self, 'main')
-        self.initUI_main(f)
+        self.initUI_top(ViewModel.get_frame(self, 'top'))
+        self.initUI_main(ViewModel.get_frame(self, 'main'))
+        self.initUI_ext(ViewModel.get_frame(self, 'ext'))
 
     def initUI_top(self, parent):
-        parent.widgets = {'desp': Label(parent, text="Settings",
-                                        font=self.ctx.const['font_title'])}
+        parent.widgets = {'desp': Label(parent, text="Settings", style='Title.TLabel')}
         parent.widgets['desp'].pack(anchor=tk.W)
 
     def initUI_main(self, parent):
@@ -51,6 +48,12 @@ class FrameSet(tk.Frame):
         self.initUI_main_btn(ViewModel.get_frame(parent, 'btn'))
         self.initUI_main_set_date(ViewModel.get_frame(parent, ['set', 'date']))
         self.initUI_main_set_file(ViewModel.get_frame(parent, ['set', 'file']))
+
+    def initUI_ext(self, parent):
+
+        parent.widgets = {'plot':   Radiobutton(parent, text="Generate Plot")}
+        packing = [('plot', {'anchor': tk.W})]
+        ViewModel.pack_widgets(parent.widgets, packing)
 
     def initUI_main_set_date(self, parent):
 

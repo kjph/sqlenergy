@@ -58,22 +58,28 @@ class FrameTable(tk.Frame):
 
     def initUI_main_opts(self, parent):
 
-        ViewModel.mk_frames_in(parent, self.ctx.stat_fields,
+        #Create table option (for adding)
+        ViewModel.mk_frames_in(parent, [x[0] for x in self.ctx.stat_fields],
                                {'fill': tk.X})
         for var in self.ctx.stat_fields:
-            f = ViewModel.get_frame(parent, var)
-            f.widgets = {'%s-label' % var: Label(f, text=var),
-                         var: Entry(f, width=10)}
+            f = ViewModel.get_frame(parent, var[0])
+
+            #Create widgets
+            f.widgets = {'%s-label' % var[0]:   Label(f, text=var[1]),
+                         var[0]:                Entry(f, width=10)}
 
             #pack
-            f.widgets['%s-label' % var].pack(side=tk.LEFT)
-            f.widgets[var].pack(side=tk.RIGHT)
+            packing = [('%s-label' % var[0],    {'side': tk.LEFT}),
+                       (var[0],                 {'side': tk.RIGHT})]
+            ViewModel.pack_widgets(f.widgets, packing, self.ctx.global_widget_conf)
 
         btn_size = 12
-        parent.widgets = {'btn-add': Button(parent, text=">> Add", width=btn_size, command=self.add_table_selected),
-                       'btn-del': Button(parent, text="<< Remove", width=btn_size, command=self.del_table_selected),
-                       'btn-reg': Button(parent, text="Regex...", width=btn_size),
-                       'btn-all': Button(parent, text="Select All", width=btn_size)}
+        parent.widgets = {'btn-add': Button(parent, text=">> Add", width=btn_size,
+                                            command=self.add_table_selected),
+                          'btn-del': Button(parent, text="<< Remove", width=btn_size,
+                                            command=self.del_table_selected),
+                          'btn-reg': Button(parent, text="Regex...", width=btn_size),
+                          'btn-all': Button(parent, text="Select All", width=btn_size)}
 
         packing = [('btn-add', {}),
                    ('btn-del', {'side': tk.BOTTOM}),
@@ -86,7 +92,7 @@ class FrameTable(tk.Frame):
         parent.widgets['selectTree'].pack(side=tk.LEFT, fill=tk.BOTH)
 
         tt = parent.widgets['selectTree']
-        tt["columns"] = self.ctx.stat_fields
+        tt["columns"] = [x[0] for x in self.ctx.stat_fields]
         tt.column("stype", width=80)
         tt.column("thr_min", width=60)
         tt.column("thr_max", width=60)

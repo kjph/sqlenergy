@@ -14,7 +14,10 @@ class Context():
         #That defines the structure of Core Model Attributes
         self.dbi_fields = ('host', 'user', 'passwd', 'db', 'port')
         self.dbi_defaults = {'port': 3306}
-        self.stat_fields = ('stype', 'thr_min', 'thr_max', 'time_format')
+        self.stat_fields = (('stype', "Source Type"),
+                            ('thr_min', "Thr. Min"),
+                            ('thr_max', "Thr. Max"),
+                            ('time_format', 'Time Form.'))
         self.stat_defaults = {'thr_min': 0.0,
                               'thr_max': 100.0,
                               'time_format': '%Y-%m-%d %H:%M:%S.%f'}
