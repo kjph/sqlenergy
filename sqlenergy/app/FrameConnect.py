@@ -25,8 +25,8 @@ class FrameConnect(tk.Frame):
         self.strvars = {}
 
         #Frames (containers for UIs)
-        ViewModel.mk_frames_in(self, ['info', 'file'],
-                       **{'fill': tk.Y, 'side':tk.LEFT})
+        ViewModel.mk_frames_in(self, [('info', {'fill': tk.BOTH, 'side':tk.LEFT}),
+                                       ('file', {'fill': tk.BOTH, 'side':tk.LEFT})])
 
         #Create the regions
         self.initUI_info(self.frames['info'])
@@ -37,36 +37,44 @@ class FrameConnect(tk.Frame):
         For loading configuration files
         """
 
+        parent.pack(side=tk.RIGHT)
         self.strvars['dbi_file'] = tk.StringVar(value="")
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(parent, ['top', 'main', 'core'],
-                       **{'fill': tk.X})
+                       {'fill': tk.X})
 
-        parent.widgets = {'top': Label(parent.frames['top'], text="OR Load Configuration",
-                                            font=self.ctx.const['font_title']),
-                          'label': Label(parent.frames['main'], text="File:"),
-                          'entry': Entry(parent.frames['main'], textvariable=self.strvars['dbi_file'],
-                                         width=self.ctx.const['win_width']/20),
-                          'btn_find': Button(parent.frames['main'], text="...",
-                                             command=self.get_dbi_file_dialog, width=3),
-                          'btn_load': Button(parent.frames['core'], text="Load",
-                                             command=self.get_dbi_file_user_input, width=7),
-                          'btn_conn': Button(parent.frames['core'], text="Ping",
-                                             command=self.ping_database, width=7),
-                          'btn_clear': Button(parent.frames['core'], text="Clear",
-                                              command=self.clear_context, width = 7)}
+        parent.widgets = {'top':        Label(parent.frames['top'], text="OR Load Configuration",
+                                              font=self.ctx.const['font_title']),
+                          'label':      Label(parent.frames['main'], text="File:"),
+                          'entry':      Entry(parent.frames['main'], textvariable=self.strvars['dbi_file'],
+                                              width=self.ctx.const['win_width']/20),
+                          'btn_find':   Button(parent.frames['main'], text="...",
+                                               command=self.get_dbi_file_dialog, width=3),
+                          'btn_load':   Button(parent.frames['core'], text="Load",
+                                               command=self.get_dbi_file_user_input, width=7),
+                          'btn_conn':   Button(parent.frames['core'], text="Ping",
+                                               command=self.ping_database, width=7),
+                          'btn_clear':  Button(parent.frames['core'], text="Clear",
+                                               command=self.clear_context, width = 7)}
 
-        parent.widgets['top'].pack(anchor=tk.W, side=tk.LEFT)
-        parent.widgets['label'].pack(fill=tk.X, side=tk.LEFT, **self.ctx.global_widget_conf)
-        parent.widgets['entry'].pack(fill=tk.X, side=tk.LEFT, **self.ctx.global_widget_conf)
-        parent.widgets['btn_load'].pack(side=tk.RIGHT, **self.ctx.global_widget_conf)
-        parent.widgets['btn_find'].pack(side=tk.RIGHT, **self.ctx.global_widget_conf)
-        parent.widgets['btn_conn'].pack(side=tk.RIGHT, **self.ctx.global_widget_conf)
-        parent.widgets['btn_clear'].pack(side=tk.RIGHT, **self.ctx.global_widget_conf)
+        packing = [('top',   {'anchor': tk.W, 'side': tk.LEFT}),
+                   ('label', {'fill': tk.X, 'side': tk.LEFT, 'extconf': self.ctx.global_widget_conf}),
+                   ('entry', {'fill': tk.X, 'side': tk.LEFT, 'extconf': self.ctx.global_widget_conf}),
+                   ('btn_load', {'side': tk.RIGHT, 'extconf': self.ctx.global_widget_conf}),
+                   ('btn_find', {'side': tk.RIGHT, 'extconf': self.ctx.global_widget_conf}),
+                   ('btn_conn', {'side': tk.RIGHT, 'extconf': self.ctx.global_widget_conf}),
+                   ('btn_clear', {'side': tk.RIGHT, 'extconf': self.ctx.global_widget_conf})]
+        ViewModel.pack_widgets(parent.widgets, packing)
 
 
     def initUI_info(self, parent):
+
+        # TODO
+        # Re-factor this code to be more explicit
+
+        # BUG
+        # 'passwd' entry does not fit
 
         parent.widgets = {'top': Label(parent, text="Specify Database Information",
                                              font=self.ctx.const['font_title'])}

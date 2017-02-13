@@ -39,7 +39,7 @@ class View(tk.Frame):
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(parent, ['main', 'status'],
-                       **{'fill': tk.BOTH})
+                       {'fill': tk.BOTH})
 
         f = ViewModel.get_frame(parent, 'main')
         self.initUI_main(f)

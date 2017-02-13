@@ -14,7 +14,7 @@ class FrameQuery(tk.Frame):
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(self, ['top', 'main'],
-                       **{'fill': tk.BOTH, 'side': tk.LEFT})
+                       {'fill': tk.BOTH, 'side': tk.LEFT})
 
         f = ViewModel.get_frame(self, 'top')
         self.initUI_top(f)
@@ -33,9 +33,10 @@ class FrameQuery(tk.Frame):
 
         parent.widgets = {'clear-all':  Button(parent, text="Clear All", command=self.clear_all),
                           'query':      Button(parent, text="Query", command=self.do_query)}
+
         packing = [('clear-all', {'side': tk.LEFT}),
                    ('query', {'side': tk.LEFT})]
-        ViewModel.pack_widgets(parent.widgets, packing)
+        ViewModel.pack_widgets(parent.widgets, packing, self.ctx.global_widget_conf)
 
     def clear_all(self):
         self.ctx.on_call('clearAll')
@@ -47,6 +48,7 @@ class FrameQuery(tk.Frame):
 
         r = self.ctx.update_context()
         if not(r):
+            self.ctx.status.set("something went wrong")
             return 0
 
         min_res = 15

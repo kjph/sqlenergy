@@ -24,7 +24,7 @@ class FrameTable(tk.Frame):
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(self, ['top', 'main', 'btn'],
-                       **{'fill': tk.BOTH})
+                       {'fill': tk.BOTH})
 
         #Widget
         self.initUI_top(ViewModel.get_frame(self, 'top'))
@@ -40,7 +40,7 @@ class FrameTable(tk.Frame):
 
         #Generate the frames for main
         ViewModel.mk_frames_in(parent, ['fetched', 'opts', 'selected'],
-                               **{'fill': tk.BOTH, 'side': tk.LEFT})
+                               {'fill': tk.BOTH, 'side': tk.LEFT})
 
         #fetched frame
         f = ViewModel.get_frame(parent, 'fetched')
@@ -59,7 +59,7 @@ class FrameTable(tk.Frame):
     def initUI_main_opts(self, parent):
 
         ViewModel.mk_frames_in(parent, self.ctx.stat_fields,
-                               **{'fill': tk.X})
+                               {'fill': tk.X})
         for var in self.ctx.stat_fields:
             f = ViewModel.get_frame(parent, var)
             f.widgets = {'%s-label' % var: Label(f, text=var),
@@ -67,7 +67,7 @@ class FrameTable(tk.Frame):
 
             #pack
             f.widgets['%s-label' % var].pack(side=tk.LEFT)
-            f.widgets[var] .pack(side=tk.RIGHT)
+            f.widgets[var].pack(side=tk.RIGHT)
 
         btn_size = 12
         parent.widgets = {'btn-add': Button(parent, text=">> Add", width=btn_size, command=self.add_table_selected),
@@ -75,10 +75,11 @@ class FrameTable(tk.Frame):
                        'btn-reg': Button(parent, text="Regex...", width=btn_size),
                        'btn-all': Button(parent, text="Select All", width=btn_size)}
 
-        parent.widgets['btn-add'].pack()
-        parent.widgets['btn-del'].pack(side=tk.BOTTOM)
-        parent.widgets['btn-reg'].pack(side=tk.BOTTOM)
-        parent.widgets['btn-all'].pack(side=tk.BOTTOM)
+        packing = [('btn-add', {}),
+                   ('btn-del', {'side': tk.BOTTOM}),
+                   ('btn-reg', {'side': tk.BOTTOM}),
+                   ('btn-all', {'side': tk.BOTTOM})]
+        ViewModel.pack_widgets(parent.widgets, packing, self.ctx.global_widget_conf)
 
     def initUI_main_selected(self, parent):
         parent.widgets = {'selectTree': ttk.Treeview(parent)}

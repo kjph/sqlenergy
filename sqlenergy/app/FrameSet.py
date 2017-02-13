@@ -23,7 +23,7 @@ class FrameSet(tk.Frame):
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(self, ['top', 'main'],
-                       **{'fill': tk.BOTH})
+                       {'fill': tk.BOTH})
 
         f = ViewModel.get_frame(self, 'top')
         self.initUI_top(f)
@@ -40,12 +40,12 @@ class FrameSet(tk.Frame):
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(parent, ['set', 'btn'],
-                       **{'fill': tk.BOTH, 'side': tk.LEFT})
+                       {'fill': tk.BOTH, 'side': tk.LEFT})
 
         #Sub frames under 'set'
         f_set = ViewModel.get_frame(parent, 'set')
         ViewModel.mk_frames_in(f_set, ['date', 'file'],
-                               **{'fill': tk.BOTH})
+                               {'fill': tk.BOTH})
 
         self.initUI_main_btn(ViewModel.get_frame(parent, 'btn'))
         self.initUI_main_set_date(ViewModel.get_frame(parent, ['set', 'date']))
@@ -160,14 +160,16 @@ class FrameSet(tk.Frame):
             else:
                 dates[key] = int(val)
 
-            if val < date_thres[key][0]:
+            if dates[key] < date_thres[key][0]:
                 self.ctx.status.set("%s is less than its threshold of %i" % (key, date_thres[key][0]))
                 return 0
-            if val > date_thres[key][1]:
+            if dates[key] > date_thres[key][1]:
                  self.ctx.status.set("%s is greater than its threshold of %i" % (key, date_thres[key][1]))
 
         self.ctx.params['start_date'] = "%s-%s-%s" % (dates['start_y'], dates['start_m'], dates['start_d'])
         self.ctx.params['end_date'] = "%s-%s-%s" % (dates['end_y'], dates['end_m'], dates['end_d'])
+
+        return 1
 
     def clear_all(self):
         """
