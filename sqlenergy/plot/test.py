@@ -1,5 +1,6 @@
 import csv
 import matplotlib.pyplot as plt
+from collections import OrderedDict
 
 def load_time_series(loc):
 	"""
@@ -18,7 +19,12 @@ def plot_time_series(Series, **kwargs):
 	plt.figure()
 
 	for stype in Series.all_types:
-		x, y = Series.time_value_map[stype].iteritems()
+		x = []
+		y = []
+		OrderedTimeSeries = OrderedDict(sorted(Series.time_value_map[stype].iteritems()))
+		for k, v in OrderedTimeSeries.iteritems():
+			x.append(k)
+			y.append(v)
 		plt.plot(x,y)
 
 	plt.show()
