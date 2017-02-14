@@ -18,6 +18,13 @@ The software should be ready to run.
 1. Go to the repository
 2. Run the `run.bat` file
 
+# Updating
+
+Because this repository is maintained with `git`, simply pulling from `master` will update
+the software.
+
+Alternatively, simply running the `install.bat` file will update the software
+
 # Database Credentials
 
 Database credentials must specify the host, user, password, database name, and port.
