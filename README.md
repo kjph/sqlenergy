@@ -2,29 +2,21 @@
 Python wrapper to query MySQL database and retrieve energy time series data from multiple sources.
 The script calculates the usage of energy for various groups of sources in a time-series format for further analysis
 
-# Command-Line Usage
+# Installation
 
-Directly calling the `hquery.py` script will query the database specified in `res/cred.[csv/json]` (see Database Credentials).
+Currently, this software only supports Python 2.7.x 32-bit on Windows machines.
 
-```bash
-~$ python hquery.py
-```
+1. Install [`git`](https://git-for-windows.github.io/)
+2. Install [Python 2.7 (32-bit)](https://www.python.org/downloads/windows/)
+3. Clone this repository
+4. Run the `install.bat` file (double-click in Windows)
 
-An alternative location for the database and table list can be specified in the `get_time_series` 5th and 6th positional arguments
+The software should be ready to run.
 
-```python
-    get_time_series(start_date, end_date, min_res, table_file='res/table_list.txt', cred_file='res/cred.json')
-```
+# To Run
 
-Settings must currently be directly modified in the `main()` method of `hquery.py`
-
-```python
-    #Settings (temporary)
-    min_res = 15
-    start_date = '2016-01-01'
-    end_date = '2016-12-31'
-    base_output = 'test_output'
-```
+1. Go to the repository
+2. Run the `run.bat` file
 
 # Database Credentials
 
@@ -49,5 +41,12 @@ Strictly, the fields must be either `host`, `user`, `passwd`, `db`, or `port`
 # Table List
 The table list is the list of tables that the sript will query from the specified database.
 
-Currently, the table list must be a plain text file, with `csv` rows of length 2. The first column is the table name, and
-the second column is the source type
+Currently, the table list must be a plain text file, with `csv` rows of at least 2 columns. The first column is the table name, and the second column is the source type. These columns are mandatory.
+
+Additional columns may be added, and must specify the following information
+
+1. Table name
+2. Source Type
+3. Minimum threshold value
+4. Maximum threshold value
+5. Time format in database
