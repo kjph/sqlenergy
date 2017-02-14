@@ -4,7 +4,7 @@ import Tkinter as tk
 import ttk
 from Tkinter import Label, Frame, Listbox, Button, Entry
 import tkFileDialog as filedialog
-from . import core
+from sqlenergy import core
 import ViewModel
 from ttk import *
 

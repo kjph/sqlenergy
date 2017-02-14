@@ -2,8 +2,8 @@ import os
 import Tkinter as tk
 from Tkinter import Frame, Label, Button
 import ViewModel
-from . import core
-from . import plot
+from sqlenergy import core
+from sqlenergy import plot
 from ttk import *
 
 class FrameQuery(tk.Frame):

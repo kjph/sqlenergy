@@ -5,7 +5,7 @@ from collections import OrderedDict
 import Tkinter as tk
 from Tkinter import Label, Button, Entry, Listbox, Frame, Canvas
 import tkFileDialog as filedialog
-from . import core
+from sqlenergy import core
 import ViewModel
 from ttk import *
 

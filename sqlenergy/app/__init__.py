@@ -3,6 +3,8 @@ from .. import core
 from . import FrameConnect
 from . import FrameSet
 from . import FrameTable
+from . import FrameQuery
 from . import Main
 from . import View
 from . import ViewModel
+from . import Context
