@@ -41,7 +41,7 @@ class Context():
         if len(stat) != len(self.stat_fields):
             logging.warning("CTX:ERR:Attempted to add table in bad format")
             return
-        for field in self.stat_fields:
+        for field in [x[0] for x in self.stat_fields]:
             if field not in stat:
                 logging.warning("CTX:ERR:Attempted to add table in bad format")
                 return
