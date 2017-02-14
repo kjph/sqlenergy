@@ -162,12 +162,13 @@ class FrameTable(tk.Frame):
         # main-opts frame
         values = {}
         for var in self.ctx.stat_fields:
-            wid = ViewModel.get_widget(self, ['main', 'opts', var],
-                                       var)
-            values[var] = wid.get().strip()
-            if values[var] == '':
-                if var in self.ctx.stat_defaults:
-                    values[var] = self.ctx.stat_defaults[var]
+            key = var[0]
+            wid = ViewModel.get_widget(self, ['main', 'opts', key],
+                                       key)
+            values[key] = wid.get().strip()
+            if values[key] == '':
+                if key in self.ctx.stat_defaults:
+                    values[key] = self.ctx.stat_defaults[key]
                 else:
                     self.ctx.status.set("Please enter in %s info" % var)
                     return 0
@@ -188,7 +189,7 @@ class FrameTable(tk.Frame):
                 self.del_table(tab)
 
             #Add to selectTree
-            disp_values = [ values[k] for k in self.ctx.stat_fields]
+            disp_values = [values[k[0]] for k in self.ctx.stat_fields]
             selectTree.insert("",col, text=tab, values=disp_values)
 
             #Add to context
@@ -211,7 +212,7 @@ class FrameTable(tk.Frame):
         values = []
         for tab, stat in tab_stat.iteritems():
             for var in self.ctx.stat_fields:
-                values.append(stat[var])
+                values.append(stat[var[0]])
 
             selectTree = ViewModel.get_widget(self, ['main', 'selected'],
                                   'selectTree')
