@@ -17,6 +17,5 @@ class Main():
     def run(self):
         self.root.mainloop()
 
-if __name__ == '__main__':
-    m = Main()
-    m.run()
+m = Main()
+m.run()
