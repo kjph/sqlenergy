@@ -16,7 +16,7 @@ class TimeSeries():
         self.time_max = datetime.min
 
         #Data structures
-        self.all_types = all_types
+        self.all_types = sorted(all_types)
         self.time_value_map = {series_type: collections.defaultdict(float) for series_type in all_types}
 
         #Time resolution
