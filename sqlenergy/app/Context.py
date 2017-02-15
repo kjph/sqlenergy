@@ -45,6 +45,8 @@ class Context():
             if field not in stat:
                 logging.warning("CTX:ERR:Attempted to add table in bad format")
                 return
+            if field == 'thr_min' or field == 'thr_max':
+                stat[field] = float(stat[field])
         self.tab_stat[table] = stat
         logging.debug("CTX:add_table:%s:%s" % (table,stat))
 

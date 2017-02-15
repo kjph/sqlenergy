@@ -167,13 +167,14 @@ class FrameTable(tk.Frame):
             wid = ViewModel.get_widget(self, ['main', 'opts', key],
                                        key)
             values[key] = wid.get().strip()
-            logging.debug("add_table_selected: %s=%s" % (key, values[key]))
             if values[key] == '':
                 if key in self.ctx.stat_defaults:
                     values[key] = self.ctx.stat_defaults[key]
                 else:
                     self.ctx.status.set("Please enter in %s info" % var)
                     return 0
+            logging.debug("add_table_selected: %s=%s" % (key, values[key]))
+
         #Get the selected tables
         fetchList = ViewModel.get_widget(self, ['main', 'fetched'],
                                    'fetchList')
