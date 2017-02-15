@@ -2,7 +2,7 @@
 Python wrapper to query MySQL database and retrieve energy time series data from multiple sources.
 The script calculates the usage of energy for various groups of sources in a time-series format for further analysis
 
-![Example][./example.png]
+![Example](./example.png)
 
 # Installation
 
