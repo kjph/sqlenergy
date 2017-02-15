@@ -62,15 +62,16 @@ class FrameTable(tk.Frame):
         ViewModel.mk_frames_in(parent, [x[0] for x in self.ctx.stat_fields],
                                {'fill': tk.X})
         for var in self.ctx.stat_fields:
-            f = ViewModel.get_frame(parent, var[0])
+            key = var[0]
+            f = ViewModel.get_frame(parent, key)
 
             #Create widgets
-            f.widgets = {'%s-label' % var[0]:   Label(f, text=var[1]),
-                         var[0]:                Entry(f, width=10)}
+            f.widgets = {'%s-label' % key:   Label(f, text=var[1]),
+                         key:                Entry(f, width=10)}
 
             #pack
-            packing = [('%s-label' % var[0],    {'side': tk.LEFT}),
-                       (var[0],                 {'side': tk.RIGHT})]
+            packing = [('%s-label' % key,    {'side': tk.LEFT}),
+                       (key,                 {'side': tk.RIGHT})]
             ViewModel.pack_widgets(f.widgets, packing, self.ctx.global_widget_conf)
 
         btn_size = 12
@@ -166,14 +167,13 @@ class FrameTable(tk.Frame):
             wid = ViewModel.get_widget(self, ['main', 'opts', key],
                                        key)
             values[key] = wid.get().strip()
+            logging.debug("add_table_selected: %s=%s" % (key, values[key]))
             if values[key] == '':
                 if key in self.ctx.stat_defaults:
                     values[key] = self.ctx.stat_defaults[key]
                 else:
                     self.ctx.status.set("Please enter in %s info" % var)
                     return 0
-            logging.debug("frametable:add_table:%s" % values)
-
         #Get the selected tables
         fetchList = ViewModel.get_widget(self, ['main', 'fetched'],
                                    'fetchList')
@@ -209,8 +209,9 @@ class FrameTable(tk.Frame):
             self.ctx.status.set("Could not load table file")
             return 0
 
-        values = []
+
         for tab, stat in tab_stat.iteritems():
+            values = []
             for var in self.ctx.stat_fields:
                 values.append(stat[var[0]])
 

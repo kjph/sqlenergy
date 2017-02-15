@@ -79,6 +79,7 @@ def table_stat(loc):
                 r[table]['thr_max'] = 100.0
                 r[table]['time_format'] = '%Y-%m-%d %H:%M:%S.%f'
 
+    logging.debug("fetchInputs:%s" % r)
     return r
 
 def get_datetime_from_str(in_str, time_format='%Y-%m-%d %H:%M:%S'):
