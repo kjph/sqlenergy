@@ -13,7 +13,7 @@ class View(tk.Frame):
     Primary container
     """
 
-    def __init__(self, parent, ctx, *args, **kwargs):
+    def __init__(self, parent, ctx, conf, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.parent.title("CSIRO Energy Analyzer")
@@ -29,7 +29,6 @@ class View(tk.Frame):
         self.parent.Style.configure('Title.TLabel',
                                     font="Arial 9 bold")
 
-
         #Context container to pass to children
         self.ctx = ctx
         self.ctx.status = tk.StringVar(value="Ready.")
@@ -37,6 +36,10 @@ class View(tk.Frame):
         self.ctx.const = {'win_width': 760,#Window width
                           'font_title': "Arial 9 bold"}#Font of titles
         self.ctx.opts = {'dir': {'initialdir':os.path.expanduser('~')}}
+
+        if conf != None:
+            self.load_ctx_conf(conf)
+            self.ctx.on_call('loadconf')
 
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(parent, ['main', 'status'], {'fill': tk.BOTH})
@@ -63,3 +66,6 @@ class View(tk.Frame):
         #Status bar
         self.widgets = {'stat': Label(parent, textvariable=self.ctx.status, font="Default 8")}
         self.widgets['stat'].pack(anchor=tk.W)
+
+    def load_ctx_conf(self, conf):
+        pass
