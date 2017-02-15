@@ -1,5 +1,7 @@
 #Sensitive information
 res/cred.*
+.conf/last.ini
+*.ini
 
 #Outputs
 *.csv
