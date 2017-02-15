@@ -71,8 +71,8 @@ class FrameSet(tk.Frame):
                           'end-m':          Entry(parent, width=3),
                           'end-d-lab':      Label(parent, text="D"),
                           'end-d':          Entry(parent, width=3),
-                          'min-res-lab':    Label(parent, text="Minute Res."),
-                          'min-res':        Entry(parent, width=5)}
+                          'min_res-lab':    Label(parent, text="Minute Res."),
+                          'min_res':        Entry(parent, width=5)}
 
         packing = [('start-lab',   {'side':tk.LEFT}),
                    ('start-y-lab', {'side':tk.LEFT}),
@@ -88,8 +88,8 @@ class FrameSet(tk.Frame):
                    ('end-m',       {'side':tk.LEFT, 'padx': (0, 5)}),
                    ('end-d-lab',   {'side':tk.LEFT}),
                    ('end-d',       {'side':tk.LEFT}),
-                   ('min-res',     {'side':tk.RIGHT}),
-                   ('min-res-lab', {'side':tk.RIGHT})
+                   ('min_res',     {'side':tk.RIGHT}),
+                   ('min_res-lab', {'side':tk.RIGHT})
                    ]
         ViewModel.pack_widgets(parent.widgets, packing)
 
@@ -141,6 +141,20 @@ class FrameSet(tk.Frame):
                                          'file-entry').get().strip()
         self.ctx.params['outf_name'] = outf_name
 
+        min_res = ViewModel.get_widget(self, ['main', 'set', 'date'],
+                                       'min_res').get().strip()
+        try:
+            min_res = int(float(min_res))
+        except ValueError:
+            self.ctx.status.set("Minute resolution must be a numeric type")
+            min_res = self.ctx.param_defaults['min_res']
+        if min_res < 0:
+            self.ctx.status.set("Minute resolution must be greater than zero")
+            min_res = self.ctx.param_defaults['min_res']
+
+        self.ctx.params['min_res'] = min_res
+        logging.debug("Minute resolution set to: %s" % min_res)
+
         f = ViewModel.get_frame(self, ['main', 'set', 'date'])
         widgets = f.widgets
         dates = {'start_y': widgets['start-y'].get().strip(),
@@ -191,6 +205,7 @@ class FrameSet(tk.Frame):
         widgets['end-y'].delete(0, 'end')
         widgets['end-m'].delete(0, 'end')
         widgets['end-d'].delete(0, 'end')
+        widgets['min_res'].delete(0, 'end')
         ViewModel.get_widget(self, ['main', 'set', 'file'],
                              'file-entry').delete(0, 'end')
         self.update_context(True)

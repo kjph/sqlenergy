@@ -21,7 +21,8 @@ class Context():
         self.stat_defaults = {'thr_min': 0.0,
                               'thr_max': 100.0,
                               'time_format': '%Y-%m-%d %H:%M:%S.%f'}
-        self.param_list = ('outf_dir', 'outf_name', 'start_date', 'end_date', 'outf_ext')
+        self.param_list = ('outf_dir', 'outf_name', 'start_date', 'end_date', 'outf_ext', 'min_res')
+        self.param_defaults = {'min_res': 15}
 
         #Core Model Attributes
         self.dbi = {x: None for x in self.dbi_fields}

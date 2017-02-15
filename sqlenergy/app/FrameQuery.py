@@ -56,7 +56,7 @@ class FrameQuery(tk.Frame):
         min_res = 15
         Series = core.hquery.get_time_series(self.ctx.params['start_date'],
                                  self.ctx.params['end_date'],
-                                 min_res,
+                                 self.ctx.params['min_res'],
                                  self.ctx.tab_stat,
                                  **self.ctx.dbi)
 

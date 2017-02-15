@@ -12,7 +12,7 @@ class Main():
         self.context = Context()
         self.view = View(self.root, self.context)
         open('gui.main.log', 'w').close()#Clear the log file
-        logging.basicConfig(filename='gui.main.log',level=logging.DEBUG)
+        logging.basicConfig(filename='gui.main.log',level=logging.INFO)
 
     def run(self):
         self.root.mainloop()

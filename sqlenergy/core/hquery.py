@@ -130,12 +130,18 @@ def get_time_series(start_date, end_date, min_res, tab_stat, **dbi):
 
     """
 
+    logging.info("hquery:get_time_series: called with params (%s, %s, %i, %s, %s)" % (start_date,
+                                                                                      end_date,
+                                                                                      min_res,
+                                                                                      tab_stat,
+                                                                                      dbi))
+
     #Connect to database and get cursor
     db = connect_mysql_converted(**dbi)
     if isinstance(db, tuple):
         logging.error("hquery:get_time_series: Connection failed failed, exiting")
         return 0
-        
+
     cursor = db.cursor()
 
     #Get unique keys
