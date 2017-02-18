@@ -1,14 +1,21 @@
 import os
 import logging
 import collections
+import ConfigParser
 
 class Context():
 
-    def __init__(self):
+    def __init__(self, config_file):
 
         #Frame container
         #TODO: is this needed?
         self.frames = {}
+        self.types = {}
+        self.data = {}
+        self.dispStrs = {}
+        self.defaults = {}
+        self.layout = {}
+        self._configure(config_file)
 
         #Specify immutable object
         #That defines the structure of Core Model Attributes
@@ -36,6 +43,81 @@ class Context():
         #ViewModel function handles
         self.func = []
         self.funcgroup = collections.defaultdict(list)
+
+    def _configure(self, config_file):
+        """
+        Configure the context class.
+
+        This method ensures the correct types are used in the app
+        """
+
+        conf = ConfigParser.ConfigParser()
+        conf.readfp(open(config_file))
+
+        #Load type information
+        for sect in conf.sections():
+            if '-types' in sect:
+                key = sect.replace('-types', '')
+                self.types[key] = {i:eval(conf.get(sect, i)) for i in conf.options(sect)}
+                self.data[key] = {i:None for i in conf.options(sect)}
+            if '-disp' in sect:
+                key = sect.replace('-disp', '')
+                self.dispStrs[key] = {i:conf.get(sect, i) for i in conf.options(sect)}
+            if '-layout' in sect:
+                key = sect.replace('-layout', '')
+                self.layout[key] = [[x.strip() for x in conf.get(sect, i).split(',')] for i in conf.options(sect)]
+
+        #Second 'run'
+        #Have to make sure all types are loaded first
+        self.defaults = collections.defaultdict(dict)
+        for sect in conf.sections():
+            if '-defaults' in sect:
+                key = sect.replace('-defaults', '')
+                for i in conf.options(sect):
+                    caster = self.types[key][i]
+                    self.defaults[key][i] = caster(conf.get(sect, i))
+
+        #Fill the containers with defaults
+        for sect, container in self.data.iteritems():
+            for key in container:
+                if key in self.defaults[sect]:
+                    container[key] = self.defaults[sect][key]
+
+    def load_context(self, config_file):
+        """
+        Load context from a .INI config file
+        """
+
+        if os.path.isfile(config_file):
+            conf = ConfigParser.ConfigParser()
+            conf.readfp(open(config_file))
+        else:
+            return 0
+
+        if 'control' not in conf.sections():
+            logging.warning("CTX:load_context:No control section found. Returning")
+            return 0
+        else:
+            if conf.get('control', 'save') == '0':
+                return 0
+
+        for sect in conf.sections():
+            if sect in self.types:
+                for i in conf.options(sect):
+                    if i in self.types[sect]:
+                        caster = self.types[sect][i]
+
+                        try:
+                            self.data[sect][i] = caster(conf.get(sect, i))
+                        except ValueError:
+                            logging.warning("CTX:load_context:bad type in %s for key %s" % (sect, i))
+                    else:
+                        logging.warning("CTX:load_context:no type specified for %s,%s. Casting to string" % (sect, i))
+                        self.data[sect][i] = str(conf.get(sect, i))
+            else:
+                logging.warning("CTX:load_context:Detected sect=%s no found in Configured Context" % sect)
+
+        return 1
 
     def add_table(self, table, **stat):
 

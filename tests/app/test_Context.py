@@ -6,6 +6,7 @@ class ConfigureTests(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(ConfigureTests, self).__init__(*args, **kwargs)
         self.TestObj = Context('./tests/res/app_test_Context_settings.ini')
+        self.expected_sections = ['dbi', 'stat', 'params', 'control']
 
     def test_types(self):
         """
@@ -13,9 +14,9 @@ class ConfigureTests(unittest.TestCase):
         """
 
         types = self.TestObj.types
-        self.assertTrue(len(types) == 3)
+        self.assertTrue(len(types) == len(self.expected_sections))
 
-        for known_sect in ['dbi', 'stat', 'params']:
+        for known_sect in self.expected_sections:
             self.assertTrue(known_sect in types)
 
         #Database info test
@@ -29,6 +30,9 @@ class ConfigureTests(unittest.TestCase):
         #params random test
         self.assertTrue(types['params']['min_res'] == float)
 
+        #Control
+        self.assertTrue(types['control']['save'] == int)
+
     def test_data_container(self):
         """
         Test the data container in context
@@ -37,9 +41,9 @@ class ConfigureTests(unittest.TestCase):
         self.assertTrue(len(self.TestObj.data) == len(self.TestObj.types))
 
         data = self.TestObj.data
-        self.assertTrue(len(data) == 3)
+        self.assertTrue(len(data) == len(self.expected_sections))
 
-        for known_sect in ['dbi', 'stat', 'params']:
+        for known_sect in self.expected_sections:
             self.assertTrue(known_sect in data)
 
     def test_data_values(self):
@@ -77,6 +81,61 @@ class ConfigureTests(unittest.TestCase):
 
         exp_layout = [['host'], ['user', 'passwd'], ['db', 'port']]
         self.assertTrue(layout['dbi'] == exp_layout)
+
+class LoadContextTests(unittest.TestCase):
+
+    def __init__(self, *args, **kwargs):
+        super(LoadContextTests, self).__init__(*args, **kwargs)
+        self.TestObj = Context('./tests/res/app_test_Context_settings.ini')
+        self.TestObj.load_context('./tests/res/app_test_Context_last.ini')
+        self.expected_sections = ['dbi', 'stat', 'params', 'control']
+
+    def test_is_file_fail(self):
+        """
+        Test a non-file will not overwrite current context and a false returns
+        """
+
+        r = self.TestObj.load_context('./this/is/not/a/path')
+        self.assertFalse(r)
+
+        r = self.TestObj.load_context('./tests/res/app_test_Context_last_badLoad.ini')
+        self.assertFalse(r)
+
+        r = self.TestObj.load_context('./tests/res/app_test_Context_last_noLoad.ini')
+        self.assertFalse(r)
+
+    def test_values(self):
+        """
+        Test the values are loaded
+        """
+
+        data = self.TestObj.data
+        self.assertTrue(len(data) == len(self.expected_sections))
+
+        for known_sect in ['dbi', 'stat', 'params']:
+            self.assertTrue(known_sect in data)
+
+        #Database info values
+        self.assertTrue(data['dbi']['host'] == '111.222.333.444')
+        self.assertTrue(data['dbi']['user'] == 'someUser')
+        self.assertTrue(data['dbi']['passwd'] == '%^&_pass_with!@#$_complx,chars!:=**()/')
+        self.assertTrue(data['dbi']['db'] == 'database')
+        self.assertTrue(data['dbi']['port'] == 3306)
+
+        #tab stat
+        self.assertTrue(data['stat']['file'] == '.conf/last_tabstat.txt')
+
+        #params
+        self.assertTrue(data['params']['start_date'] == '2016-01-01')
+        self.assertTrue(data['control']['save'])
+
+    def test_bad_values(self):
+
+        data = self.TestObj.data
+
+        with self.assertRaises(KeyError):
+            data['dbi']['doNotAdd']
+            data['notASect']
 
 
 def main():
