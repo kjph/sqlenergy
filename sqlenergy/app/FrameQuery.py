@@ -17,11 +17,11 @@ class FrameQuery(tk.Frame):
         ViewModel.mk_frames_in(self, [('top', {'fill': tk.BOTH, 'side': tk.LEFT}),
                                       ('main', {'fill': tk.BOTH, 'side': tk.RIGHT})])
 
-        f = ViewModel.get_frame(self, 'top')
-        self.initUI_top(f)
+        #Build top part
+        self.initUI_top(ViewModel.get_frame(self, 'top'))
 
-        f = ViewModel.get_frame(self, 'main')
-        self.initUI_main(f)
+        #Build main part
+        self.initUI_main(ViewModel.get_frame(self, 'main'))
 
     def initUI_top(self, parent):
 

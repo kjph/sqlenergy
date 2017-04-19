@@ -19,6 +19,7 @@ class FrameTable(tk.Frame):
         self.ctx = ctx
         ViewModel.add_func_group(ctx, staticmethod(self.fetch_table_from_db), 'databaseLoad')
         ViewModel.add_func_group(ctx, staticmethod(self.clear_all), 'clearAll')
+        ViewModel.add_func_group(ctx, staticmethod(self.load_context), 'loadContext')
 
         self.consts = {'selectTreeCount': 0}
 
@@ -199,13 +200,16 @@ class FrameTable(tk.Frame):
 
         return 1
 
-    def add_table_from_file(self):
+    def add_table_from_file(self, dialog=True, target=None):
 
-        user_open_req = filedialog.askopenfile()
-        if not(user_open_req):
-            return 0
+        if(dialog):
+            target = filedialog.askopenfile()
+            if not(target):
+                return 0
+            else:
+                target = target.name
 
-        tab_stat = core.fetchInputs.table_stat(user_open_req.name)
+        tab_stat = core.fetchInputs.table_stat(target)
         if tab_stat == -1:
             self.ctx.status.set("Could not load table file")
             return 0
@@ -270,3 +274,7 @@ class FrameTable(tk.Frame):
                          'fetchList')
         wid.delete(0, tk.END)
         return 1
+
+    def load_context(self):
+
+        self.add_table_from_file(False, self.ctx.data['stat']['file'])

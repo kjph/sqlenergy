@@ -21,7 +21,6 @@ class Main():
         self.ctx = Context(conf_ctx)
 
         #Load configuration if it exists
-        self.ctx.load_context(conf_last)
 
         self.view = View(self.root, self.ctx)
 

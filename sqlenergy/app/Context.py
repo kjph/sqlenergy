@@ -88,12 +88,14 @@ class Context():
         Load context from a .INI config file
         """
 
+        #Check if file exists
         if os.path.isfile(config_file):
             conf = ConfigParser.ConfigParser()
             conf.readfp(open(config_file))
         else:
             return 0
 
+        #Check file was set to load
         if 'control' not in conf.sections():
             logging.warning("CTX:load_context:No control section found. Returning")
             return 0
@@ -101,23 +103,38 @@ class Context():
             if conf.get('control', 'save') == '0':
                 return 0
 
+        r = 1#Set return value
+        #Load the data
         for sect in conf.sections():
-            if sect in self.types:
-                for i in conf.options(sect):
-                    if i in self.types[sect]:
-                        caster = self.types[sect][i]
+            for field in conf.options(sect):
+                r = self.set_data(sect, field, conf.get(sect, field)) and r
 
-                        try:
-                            self.data[sect][i] = caster(conf.get(sect, i))
-                        except ValueError:
-                            logging.warning("CTX:load_context:bad type in %s for key %s" % (sect, i))
-                    else:
-                        logging.warning("CTX:load_context:no type specified for %s,%s. Casting to string" % (sect, i))
-                        self.data[sect][i] = str(conf.get(sect, i))
-            else:
-                logging.warning("CTX:load_context:Detected sect=%s no found in Configured Context" % sect)
+        #Get all functions to load context
+        self.on_call('loadContext')
 
         return 1
+
+    def set_data(self, sect, field, value):
+
+        #Check if type is in
+        if sect not in self.types:
+            logging.warning("CTX:set_data:attempted to set data in non-existing sect=%s." % sect)
+            return 0
+
+        #Set caster
+        if field not in self.types[sect]:
+            logging.warning("CTX:set_data:sect=%s, field=%s does not have type set. Casting to string" % (sect,field))
+            caster = str
+        else:
+            caster = self.types[sect][field]
+
+        #Cast the value
+        try:
+            self.data[sect][field] = caster(value)
+            return 1
+        except ValueError:
+            logging.warning("CTX:set_data:bad type given for sect=%s, field=%s" % (sect, field))
+            return 0
 
     def add_table(self, table, **stat):
 
@@ -141,7 +158,7 @@ class Context():
     def update_context(self):
         r = 1
         for f in self.func:
-            r = r and f.__func__()
+            r = f.__func__() and r
         return r
 
     def on_call(self, call):

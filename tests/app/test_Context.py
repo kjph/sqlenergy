@@ -137,6 +137,29 @@ class LoadContextTests(unittest.TestCase):
             data['dbi']['doNotAdd']
             data['notASect']
 
+class SetDataTests(unittest.TestCase):
+
+    def __init__(self, *args, **kwargs):
+        super(SetDataTests, self).__init__(*args, **kwargs)
+        self.TestObj = Context('./tests/res/app_test_Context_settings.ini')
+
+    def test_no_sect(self):
+        r = self.TestObj.set_data('notASect', 'notAField', None)
+        self.assertFalse(r)
+
+    def test_no_field(self):
+        r = self.TestObj.set_data('dbi', 'notAField', 'string')
+        self.assertTrue(r)
+        self.assertTrue(self.TestObj.data['dbi']['notAField'] == 'string')
+
+    def test_bad_type(self):
+        r = self.TestObj.set_data('dbi', 'port', 'string')
+        self.assertFalse(r)
+
+    def test_good_value(self):
+        r = self.TestObj.set_data('dbi', 'port', 3306)
+        self.assertTrue(r)
+        self.assertTrue(self.TestObj.data['dbi']['port'] == 3306)
 
 def main():
     unittest.main()

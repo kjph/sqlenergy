@@ -20,6 +20,7 @@ class FrameConnect(tk.Frame):
         self.ctx = ctx
         ViewModel.set_update_func(ctx, staticmethod(self.update_context))
         ViewModel.add_func_group(ctx, staticmethod(self.clear_context), 'clearAll')
+        ViewModel.add_func_group(ctx, staticmethod(self.load_context), 'loadContext')
 
         #'Global' string variables
         self.strvars = {}
@@ -69,34 +70,33 @@ class FrameConnect(tk.Frame):
 
     def initUI_info(self, parent):
 
-        # TODO
-        # Re-factor this code to be more explicit
-
-        # BUG
-        # 'passwd' entry does not fit
-
         parent.widgets = {'top': Label(parent, text="Specify Database Information",
                                              font=self.ctx.const['font_title'])}
         parent.widgets['top'].pack(anchor=tk.W)
         parent.frames = {}
 
-        #Specify which widget (key) should be right of another widget (value)
-        adjacent_widgets = {'passwd': 'user',
-                            'port': 'db',}
+         #Create the frames for each field in dbi
+        for field in self.ctx.data['dbi']:
+            self.strvars[field] = tk.StringVar(value="")
 
-        #Generate Label-Entry pair for each field
-        for var in self.ctx.dbi_fields:
-            self.strvars[var] = tk.StringVar(value="")
-            if var in adjacent_widgets:
-                parent.frames[var] = parent.frames[adjacent_widgets[var]]
-            else:
-                parent.frames[var] = Frame(parent)
-                parent.frames[var].pack(fill=tk.X)
+        #Make frames
+        for frames in self.ctx.layout['dbi']:
 
-            parent.widgets['%s-label' % var] = Label(parent.frames[var], text="%s:" % var.title(), width=6)
-            parent.widgets['%s-label' % var].pack(fill=tk.X, side=tk.LEFT, **self.ctx.global_widget_conf)
-            parent.widgets[var] = Entry(parent.frames[var], textvariable=self.strvars[var])
-            parent.widgets[var].pack(fill=tk.X, side=tk.LEFT, **self.ctx.global_widget_conf)
+            first_frame = frames[0]
+            parent.frames[first_frame] = Frame(parent)
+            parent.frames[first_frame].pack(fill=tk.X)
+            packing = ['%s-label' % first_frame, first_frame]
+            parent.widgets['%s-label' % first_frame] = Label(parent.frames[first_frame], text="%s:" % first_frame.title(), width=6)
+            parent.widgets[first_frame] = Entry(parent.frames[first_frame], textvariable=self.strvars[first_frame])
+
+            for adjacent_frame in frames[1:]:
+                parent.frames[adjacent_frame] = parent.frames[frames[0]]
+                packing.extend(['%s-label' % adjacent_frame, adjacent_frame])
+                parent.widgets['%s-label' % adjacent_frame] = Label(parent.frames[adjacent_frame], text="%s:" % adjacent_frame.title(), width=6)
+                parent.widgets[adjacent_frame] = Entry(parent.frames[adjacent_frame], textvariable=self.strvars[adjacent_frame])
+
+            ViewModel.pack_widgets(parent.widgets, packing, {'fill': tk.X, 'side': tk.LEFT})
+
 
         parent.widgets['passwd'].configure(show='*')
 
@@ -218,3 +218,7 @@ class FrameConnect(tk.Frame):
         self.ctx.status.set("Cleared. Ready.")
 
         return 1
+
+    def load_context(self):
+        for field, value in self.ctx.data['dbi'].iteritems():
+            self.strvars[field].set(value)

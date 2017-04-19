@@ -13,7 +13,7 @@ class View(tk.Frame):
     Primary container
     """
 
-    def __init__(self, parent, ctx, conf, *args, **kwargs):
+    def __init__(self, parent, ctx, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.parent.title("CSIRO Energy Analyzer")
@@ -37,10 +37,6 @@ class View(tk.Frame):
                           'font_title': "Arial 9 bold"}#Font of titles
         self.ctx.opts = {'dir': {'initialdir':os.path.expanduser('~')}}
 
-        if conf != None:
-            self.load_ctx_conf(conf)
-            self.ctx.on_call('loadconf')
-
         #Frames (containers for UIs)
         ViewModel.mk_frames_in(parent, ['main', 'status'], {'fill': tk.BOTH})
 
@@ -49,6 +45,8 @@ class View(tk.Frame):
 
         f = ViewModel.get_frame(parent, 'status')
         self.initUI_status(f)
+
+        self.ctx.load_context('./.conf/last.ini')
 
     def initUI_main(self, parent):
         #UI Layout
@@ -67,5 +65,7 @@ class View(tk.Frame):
         self.widgets = {'stat': Label(parent, textvariable=self.ctx.status, font="Default 8")}
         self.widgets['stat'].pack(anchor=tk.W)
 
-    def load_ctx_conf(self, conf):
-        pass
+
+
+
+
